@@ -16,9 +16,13 @@ angular.module('gameApp').controller('AppCtrl',
   $location.url('/loading');
 
   dataLoader.preLoad().ready(function () {
+    $location.url(originalTarget);
+    // TODO: uncomment when we have imgs
+    /*
     imageLoader.preLoad().ready(function () {
       $location.url(originalTarget);
     });
+    */
   });
 
 
