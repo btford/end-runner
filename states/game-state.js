@@ -36,9 +36,9 @@ GameState.prototype.add = function (socket) {
   var ret = SocketronState.prototype.add.apply(this, arguments);
 
   socket.emit('change:route', '/game/' + this._name);
-  socket.emit('init:game:model', this.repr());
+  socket.emit('init:shared:model', this.model);
 
-  this.broadcast('update:game', this.repr());
+  //this.broadcast('update:shared:model', this.repr());
 
   // when the first player joins, start the game
   if (this.numberOfPlayers === 1) {
@@ -58,7 +58,7 @@ GameState.prototype.remove = function (socket) {
   }
 
   var ret = SocketronState.prototype.remove.apply(this, arguments);
-  this.broadcast('update:game', this.repr());
+  //this.broadcast('update:shared:model', this.repr());
   return ret;
 };
 
@@ -81,7 +81,7 @@ GameState.prototype.start = function() {
     var diff = now - last;
     gameModel.calculate(diff);
     if (diff) {
-      thisGameState.broadcast('shared:update', gameModel.getChanges());
+      thisGameState.broadcast('update:shared:model', gameModel.getChanges());
     }
     last = now;
 

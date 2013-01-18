@@ -29,11 +29,11 @@ angular.module('gameApp').factory('sharedModel', function (socket) {
     lastObj[property] = value;
   };
 
-  rawSocket.on('init:shared', function (message) {
+  rawSocket.on('init:shared:model', function (message) {
     shared = message;
   });
 
-  rawSocket.on('update:shared', function (message) {
+  rawSocket.on('update:shared:model', function (message) {
     angular.forEach(message, function (pairs, path) {
       if (typeof pairs === 'object') {
         angular.forEach(pairs, function (value, subPath) {

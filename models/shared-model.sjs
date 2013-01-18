@@ -80,7 +80,7 @@ var SharedModel = module.exports = function () {
 };
 
 SharedModel.prototype.calculate = function (delta) {
-  this_(timer += delta / 10);
+  this_(timer += delta / 10); // this.timer += delta / 10;
 }
 
 SharedModel.prototype.getChanges = function () {

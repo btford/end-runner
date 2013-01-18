@@ -1,7 +1,7 @@
 /*global angular:false*/
 
 angular.module('gameApp').directive('game',
-    function ($window, renderGame, fullscreen, gameController, sharedModel) {
+    function ($window, fullscreen, gameController, sharedModel) {
 
   var canvasWidth = 1000,
     canvasHeight = 600;
@@ -41,19 +41,46 @@ angular.module('gameApp').directive('game',
       angular.element(canvas).bind('click', function (ev) {
         // on click ...
       });
+
+      var pretendModel = {
+        player1: {
+          x: 5,
+          y: 5
+        },
+        player2: {
+          x: 200,
+          y: 5
+        }
+      };
       
       var render = function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        renderGame(canvas, map);
+        
+        //console.log(sharedModel.get());
+
+        // draw some shit
+        var currentPlayer;
+        for (var prop in pretendModel) {
+          if (pretendModel.hasOwnProperty(prop)) {
+            currentPlayer = pretendModel[prop];
+            context.fillRect(currentPlayer.x + sharedModel.get().timer/10, currentPlayer.y, 150, 100);
+          }
+        }
 
         // send keystrokes
 
-        if (controller) {
-          socket.getRaw().emit('controls', controller);
+        /*
+        if (gameController) {
+          socket.getRaw().emit('controls', gameController);
         }
+        */
 
         $window.requestAnimationFrame(render);
       };
+
+      // start rendering the game
+
+      render();
 
       // stop rendering when out of scope
 
