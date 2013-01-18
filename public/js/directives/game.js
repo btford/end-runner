@@ -1,27 +1,49 @@
 /*global angular:false*/
 
 angular.module('gameApp').directive('game',
-    function ($window, fullscreen, gameController, sharedModel) {
+    function ($window, fullscreen, gameController, dataLoader, sharedModel) {
 
   var canvasWidth = 1000,
     canvasHeight = 600;
+
+
+  var tileSize = 60;
 
   return {
     templateUrl: '/directives/game',
     restrict: 'E',
     link: function (scope, elm, attrs) {
-      var canvas = elm.find('canvas')[0];
 
       var mapCanvas = elm.find('canvas')[1];
+      mapCanvas.width = 1920;
+      mapCanvas.height = 1080;
+      var mapContext = canvas.getContext('2d');
 
+      var levelModel = dataLoader.get('/json/levels/level-one.json');
+      
+      var renderMap = function () {
+        levelModel.tiles.forEach(function (col, row) {
+          for (var i = 0; i < col.length; i++) {
+            switch (col[i]) {
+              case ' ':
+                mapContext.fillStyle = "#fff";
+                break;
+
+              default:
+                mapContext.fillStyle = "#ddd";
+                break;
+            }
+            
+            mapContext.fillRect(tileSize * i, tileSize * row, tileSize, tileSize);
+          }
+        });
+      };
+
+
+
+      var canvas = elm.find('canvas')[0];
       var context = canvas.getContext('2d');
-      var map;
-
-      var tileWidth = 64;
-      var tileHeight = 32;
-
-      mapCanvas.width = 100*tileWidth;
-      mapCanvas.height = 100*tileHeight;
+      
 
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
@@ -40,6 +62,7 @@ angular.module('gameApp').directive('game',
 
       angular.element(canvas).bind('click', function (ev) {
         // on click ...
+        
       });
 
       var pretendModel = {
@@ -52,14 +75,13 @@ angular.module('gameApp').directive('game',
           y: 5
         }
       };
-      
+
       var render = function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        
-        //console.log(sharedModel.get());
 
         // draw some shit
         var currentPlayer;
+        context.fillStyle = "#000";
         for (var prop in pretendModel) {
           if (pretendModel.hasOwnProperty(prop)) {
             currentPlayer = pretendModel[prop];
