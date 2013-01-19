@@ -170,20 +170,21 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
   // players
   for (var playerId in this.players) {
     if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId)) { 
-	if(this.players[playerId].y < ground_y){
-		y_acceleration = 1;
-		y_velocity = 10;
-	//	y_velocity = y_velocity - y_acceleration*zero_time;
-		player_y = y_velocity/1;
-	}
-	if(this.players[playerId].y >= ground_y){
-		y_acceleration = 0;
-		y_velocity = 0;
-	}
-	if(~~controller[playerId].up){
-		player_y = delta * ((~~controller[playerId].down) - (~~controller[playerId].up)) / 3;
-	}
-	
+
+      if(this.players[playerId].y < ground_y){
+        y_acceleration = 1;
+        y_velocity = 10;
+        // y_velocity = y_velocity - y_acceleration*zero_time;
+        player_y = y_velocity/1;
+      }
+      if(this.players[playerId].y >= ground_y){
+        y_acceleration = 0;
+        y_velocity = 0;
+      }
+      if(~~controller[playerId].up){
+        player_y = delta * ((~~controller[playerId].down) - (~~controller[playerId].up)) / 3;
+      }
+  
       this.players[playerId].x += delta * ((~~controller[playerId].right) - (~~controller[playerId].left)) / 3;
       this.players[playerId].y += player_y;
       
@@ -194,7 +195,7 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
           break;
         }
       }
-	
+  
       if (undo) {
         this.players[playerId].x -= delta * ((~~controller[playerId].right) - (~~controller[playerId].left)) / 3;
         this.players[playerId].y -= delta * ((~~controller[playerId].down) - (~~controller[playerId].up)) / 3;
