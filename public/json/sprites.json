@@ -1,4 +1,5 @@
 {
   "vending-machine": "/img/vending-machine.png",
-  "player": "/img/template.png"
+  "player": "/img/template.png",
+  "zombie": "/img/zombie.png"
 }
