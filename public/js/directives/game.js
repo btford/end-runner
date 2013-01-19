@@ -72,7 +72,6 @@ angular.module('gameApp').directive('game',
             }
           }
         }
-        console.log(type);
         return true;
       };
 
