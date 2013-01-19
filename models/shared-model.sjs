@@ -102,7 +102,6 @@ SharedModel.prototype.calculate = function (delta, controller) {
 var entityList = function (tiles) {
 
   var entities = [];
-
   var tileSize = 60;
 
   tiles.forEach(function (col, row) {
@@ -164,13 +163,29 @@ var hit = function (r1, r2) {
 }
 
 SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
-
+  var y_velocity = 0;
+  var y_acceleration = 0; 
+  var ground_y = 450;
+  var player_y = 0;
   // players
   for (var playerId in this.players) {
-    if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId)) {
-
+    if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId)) { 
+	if(this.players[playerId].y < ground_y){
+		y_acceleration = 1;
+		y_velocity = 10;
+	//	y_velocity = y_velocity - y_acceleration*zero_time;
+		player_y = y_velocity/1;
+	}
+	if(this.players[playerId].y >= ground_y){
+		y_acceleration = 0;
+		y_velocity = 0;
+	}
+	if(~~controller[playerId].up){
+		player_y = delta * ((~~controller[playerId].down) - (~~controller[playerId].up)) / 3;
+	}
+	
       this.players[playerId].x += delta * ((~~controller[playerId].right) - (~~controller[playerId].left)) / 3;
-      this.players[playerId].y += delta * ((~~controller[playerId].down) - (~~controller[playerId].up)) / 3;
+      this.players[playerId].y += player_y;
       
       var i, undo = false;
       for (i = 0; i < cachedEntityList.length; i++) {
@@ -179,7 +194,7 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
           break;
         }
       }
-
+	
       if (undo) {
         this.players[playerId].x -= delta * ((~~controller[playerId].right) - (~~controller[playerId].left)) / 3;
         this.players[playerId].y -= delta * ((~~controller[playerId].down) - (~~controller[playerId].up)) / 3;
