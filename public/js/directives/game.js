@@ -176,18 +176,24 @@ angular.module('gameApp').directive('game',
 
         //draw zombie hoard
         context.fillStyle = "#000";
-        context.fillRect(0, 0, realCenterX < canvas.width/2 ? model.zombieWall : canvas.width/2 - realCenterX + model.zombieWall, canvas.height);
-	
-        //draw zombie
-        context.drawImage(imageLoader.get('zombie'),
-          model.zombie.frame*60, 0,
-          60, 120,
+        context.fillRect(0, 0,
           realCenterX < canvas.width/2 ?
-            model.zombie.x
-            : canvas.width/2 - realCenterX + model.zombie.x,
-          model.zombie.y,
-          60, 120);
-        
+            model.zombieWall
+            : canvas.width/2 - realCenterX + model.zombieWall,
+          canvas.height);
+	
+        //draw zombies
+        model.zombies.forEach(function (zombie) {
+          context.drawImage(imageLoader.get('zombie'),
+            zombie.frame*60, 0,
+            60, 120,
+            realCenterX < canvas.width/2 ?
+              zombie.x
+              : canvas.width/2 - realCenterX + zombie.x,
+            zombie.y,
+            60, 120);
+        });
+
         // send keystrokes
         var ctrl = gameController.get();
         if (ctrl) {

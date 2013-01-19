@@ -84,16 +84,8 @@ var SharedModel = module.exports = function (socketIds) {
   this.players = {};
 
   this.zombieWall = 0;
+  this.zombies = [];
 
-  this.zombie = {
-    x: 220,
-    y: 450,
-    width: 60,
-    height: 120,
-    frame: 0
-  };
-
-  
 
   this.initMap(JSON.parse(JSON.stringify(require('../public/json/levels/level-one.json').tiles)));
 
@@ -150,24 +142,28 @@ SharedModel.prototype.initMap = function (tiles) {
           this.entities.push({
             x: tileSize * i,
             y: tileSize * row,
-            height: tileSize,
-            width: tileSize
+            width: tileSize,
+            height: tileSize
           });
           break;
 
         // buttons
+        // b
         case 'b':
           // TODO: fix button hitbox here
           this.buttons.push({
             x: tileSize * i,
             y: tileSize * row,
-            height: tileSize,
             width: tileSize,
+            height: tileSize,
             pressed: false
           });
           break;
 
         // gates (opened by buttons)
+        // |
+        // |
+        // ...
         case '|':
           // grab the whole gate by overwriting the '|' tiles below
           var next = row + 1;
@@ -180,10 +176,24 @@ SharedModel.prototype.initMap = function (tiles) {
           this.gates.push({
             x: tileSize * i,
             y: tileSize * row,
-            height: tileSize * (next - row),
             width: tileSize,
+            height: tileSize * (next - row),
             open: false
           });
+          break;
+
+        // zombie
+        // z
+        // z
+        case 'z':
+          this.zombies.push({
+            x: tileSize * i,
+            y: tileSize * row,
+            width: 60,
+            height: 120,
+            frame: 0
+          });
+          tiles[row + 1][i] = ' ';
           break;
 
         // TOOPT: make fewer, but larger this.entities
@@ -212,26 +222,39 @@ SharedModel.prototype.initMap = function (tiles) {
 
 
 SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
-  var target;
-  this.zombie.frame = Math.floor(this.timer/100) % 3;
-  for (var playerId in this.players) {
-    if (this.players.hasOwnProperty(playerId)) { 
-      target = this.players[playerId];
-      if((Math.abs(target.x-this.zombie.x) < 300) && Math.abs(target.x-this.zombie.x) > 5) {
-        if(this.zombie.x > target.x) {
-          this.zombie.x -= delta/10;
-        } else {
-          this.zombie.x += delta/10;  
+
+  var zombieChaseThreshold = 300;
+
+  this.zombies.forEach(function (zombie, zombieIndex) {
+    var target, dist;
+    var min = zombieChaseThreshold;
+
+    this.zombie.frame = Math.floor(this.timer/100) % 3;
+    
+    for (var playerId in this.players) {
+      if (this.players.hasOwnProperty(playerId)) {
+
+        dist = Math.abs(this.players[playerId].x - zombie.x)
+        if (dist < min) {
+          target = this.players[playerId];
+          min = dist;
         }
+
       }
     }
-  }
-  this_(zombie = this.zombie);
-}
+    if (target && Math.abs(target.x - zombie.x) > 10) {
+      zombie.x += zombie.x > target.x ?
+        -delta/10
+        : delta/10;
+    }
+  }, this);
+
+  this_(zombies = this.zombies);
+};
 
 SharedModel.prototype._calculateZombieWallMovement = function (delta, controller) {
   this_(zombieWall = this.timer/8);
-}
+};
 
 // assumptions: buttons always paired
 // buttons[0] + button[1] --> gate[0] opens
@@ -287,7 +310,15 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
        * Is the player hit by the zombie?
        */
 
-      var hitByZombie = hit(currentPlayer, this.zombie);
+      var hitByZombie = false;
+
+      var i;
+      for (i = 0; i < this.zombies.length; i++) {
+        if (hit(currentPlayer, this.zombies[i])) {
+          hitByZombie = true;
+          break;
+        }
+      }
 
 
       /* 
@@ -320,7 +351,7 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
        * Collision detection
        */
 
-      var i, undo = false;
+      undo = false;
       for (i = 0; i < this.entities.length; i++) {
         if (hit(currentPlayer, this.entities[i])) {
           undo = true;
