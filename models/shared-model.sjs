@@ -106,9 +106,18 @@ var entityList = function (tiles) {
   var tileSize = 60;
 
   tiles.forEach(function (col, row) {
+    tiles[row] = col.split('');
+  });
+
+  tiles.forEach(function (col, row) {
     for (var i = 0; i < col.length; i++) {
       switch (col[i]) {
+        case ' ':
+          continue;
+
         case '=':
+        case 'V':
+        default:
           entities.push({
             x: tileSize * i,
             y: tileSize * row,
@@ -116,8 +125,26 @@ var entityList = function (tiles) {
             width: tileSize
           });
           break;
-        default:
-          continue;
+
+        // TOOPT: make fewer, but larger entities
+        /*
+        case 'V':
+          try {
+            col[i+1] = ' ';
+            tiles[row+1][i] = ' ';
+            tiles[row+1][i+1] = ' ';
+            tiles[row+2][i] = ' ';
+            tiles[row+2][i+1] = ' ';
+            entities.push({
+              x: tileSize * i,
+              y: tileSize * row,
+              height: 3*tileSize,
+              width: 2*tileSize
+            });
+          }
+          catch (e) {}
+          break;
+        */
       }
     }
   });
