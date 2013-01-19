@@ -206,7 +206,6 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
       currentPlayer.x += delta * ((~~currentController.right) - (~~currentController.left)) / 3;
       currentPlayer.y += player_y;
 
-      
       /*
        * Collision detection
        */
@@ -218,7 +217,6 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
           break;
         }
       }
-  
       if (undo) {
         currentPlayer.x -= delta * ((~~currentController.right) - (~~currentController.left)) / 3;
         currentPlayer.y -= player_y;
