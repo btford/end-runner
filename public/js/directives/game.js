@@ -17,6 +17,7 @@ angular.module('gameApp').directive('game',
        */
 
       var background = elm.find('img')[0];
+      var background2 = elm.find('img')[1];
 
       /*
        * Render Map
@@ -78,7 +79,8 @@ angular.module('gameApp').directive('game',
         projectedUpperLeft = Math.max(realCenterX - canvas.width/2, 0);
         mapCanvas.style.left = '-' + projectedUpperLeft + 'px';
 
-        background.style.left = '-' + Math.floor(projectedUpperLeft/2)%2000 + 'px';
+        background.style.left = '-' + Math.floor(projectedUpperLeft/3)%1920 + 'px';
+        background2.style.left = '-' + Math.floor(projectedUpperLeft/2)%1920 + 'px';
 
         var currentPlayer;
         context.fillStyle = "#000";

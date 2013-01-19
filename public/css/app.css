@@ -51,6 +51,7 @@ game .map {
 game .background {
   position: absolute;
   z-index: -2;
+  max-width: none;
   /*background-color: rgb(128,128,128);*/
 }
 
