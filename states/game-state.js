@@ -14,11 +14,20 @@ var GameState = module.exports = function (config) {
   this.maxPlayers = 4;
   this.numberOfPlayers = 0;
 
-  // TODO: name ? GameModel
-  this.model = new SharedModel();
+  this.controller = {};
 
-  this.on('controls', function (message, state, socket) {
-    state.privateState.players[socket.id].controls = message;
+  // NOTE: hack to grab sockets that may/may not have connected
+  var socketIds = [];
+  for (var socketId in this._parent._sockets) {
+    if (this._parent._sockets.hasOwnProperty(socketId)) {
+      socketIds.push(socketId);
+    }
+  }
+  // TODO: name ? GameModel
+  this.model = new SharedModel(socketIds);
+
+  this.on('update:controller', function (message, state, socket) {
+    state.controller[socket.id] = message;
   });
 };
 
@@ -37,6 +46,9 @@ GameState.prototype.add = function (socket) {
 
   socket.emit('change:route', '/game/' + this._name);
   socket.emit('init:shared:model', this.model);
+
+  // clear controller when a player joins
+  this.controller[socket.id] = {};
 
   //this.broadcast('update:shared:model', this.repr());
 
@@ -72,6 +84,7 @@ GameState.prototype.start = function() {
 
   var gameModel = this.model;
   var thisGameState = this;
+  var thisControllerModel = this.controller;
 
   // last timestamp (in ms) since gamestate was updated
   var last = Date.now();
@@ -79,7 +92,7 @@ GameState.prototype.start = function() {
     var now = Date.now();
     //var diff = game.calculate(now - last, privateState);
     var diff = now - last;
-    gameModel.calculate(diff);
+    gameModel.calculate(diff, thisControllerModel);
     if (diff) {
       thisGameState.broadcast('update:shared:model', gameModel.getChanges());
     }

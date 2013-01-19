@@ -1,7 +1,7 @@
 /*global angular:false*/
 
 angular.module('gameApp').directive('game',
-    function ($window, fullscreen, gameController, dataLoader, sharedModel) {
+    function ($window, fullscreen, gameController, dataLoader, sharedModel, socket) {
 
   var canvasWidth = 1000,
     canvasHeight = 600,
@@ -87,28 +87,47 @@ angular.module('gameApp').directive('game',
       });
 
       
-      	
+
       var render = function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
         // draw some shit
-	projectedUpperLeft = Math.max(sharedModel.get().timer - canvas.width/2, sharedModel.get().timer);
-       mapCanvas.style.left = '-' + projectedUpperLeft + 'px';
+
+        var model = sharedModel.get();
+
+        var realCenterX = 0;
+        var prop, numberOfPlayers = 0;
+        for (prop in model.players) {
+          if (model.players.hasOwnProperty(prop)) {
+            currentPlayer = model.players[prop];
+            realCenterX += currentPlayer.x;
+            numberOfPlayers += 1;
+          }
+        }
+        realCenterX /= numberOfPlayers;
+
+        projectedUpperLeft = Math.max(realCenterX - canvas.width/2, 0);
+        mapCanvas.style.left = '-' + projectedUpperLeft + 'px';
         var currentPlayer;
         context.fillStyle = "#000";
-        for (var prop in pretendModel) {
-          if (pretendModel.hasOwnProperty(prop)) {
-            currentPlayer = pretendModel[prop];
-            context.fillRect(Math.min(sharedModel.get().timer, canvas.width/2), currentPlayer.y, 150, 100);
+        for (prop in model.players) {
+          if (model.players.hasOwnProperty(prop)) {
+            currentPlayer = model.players[prop];
+            context.fillRect(
+              realCenterX < canvas.width/2 ?
+                currentPlayer.x
+                : canvas.width/2 - realCenterX + currentPlayer.x,
+              canvas.width/2,
+              currentPlayer.y,
+              120, 120);
           }
         }
 
         // send keystrokes
 
-        /*
-        if (gameController) {
-          socket.getRaw().emit('controls', gameController);
+        var ctrl = gameController.get();
+        if (ctrl) {
+          socket.getRaw().emit('update:controller', ctrl);
         }
-        */
 
         $window.requestAnimationFrame(render);
       };

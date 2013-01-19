@@ -74,13 +74,33 @@ macro this_ {
  * Model
  */
 
-var SharedModel = module.exports = function () {
+var SharedModel = module.exports = function (socketIds) {
   this.timer = 0;
+  this.players = {};
+
+  // setup default player positions
+  socketIds.forEach(function (socketId, playerNumber) {
+    this.players[socketId] = {
+      x: 20 + 200*playerNumber,
+      y: 100
+    };
+  }, this);
+  
   this._changed = {};
 };
 
-SharedModel.prototype.calculate = function (delta) {
+SharedModel.prototype.calculate = function (delta, controller) {
+
+  // timer
   this_(timer += delta / 10); // this.timer += delta / 10;
+
+  // players
+  for (var playerId in this.players) {
+    if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId)) {
+      this.players[playerId].x += delta * ((~~controller[playerId].right) - (~~controller[playerId].left)) / 3;
+    }
+  }
+  this_(players = this.players)
 }
 
 SharedModel.prototype.getChanges = function () {
