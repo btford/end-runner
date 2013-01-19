@@ -91,7 +91,6 @@ angular.module('gameApp').directive('game',
               realCenterX < canvas.width/2 ?
                 currentPlayer.x
                 : canvas.width/2 - realCenterX + currentPlayer.x,
-              canvas.width/2,
               currentPlayer.y,
               120, 120);
           }

@@ -82,7 +82,7 @@ var SharedModel = module.exports = function (socketIds) {
   socketIds.forEach(function (socketId, playerNumber) {
     this.players[socketId] = {
       x: 20 + 200*playerNumber,
-      y: 100,
+      y: 200,
       width: 120,
       height: 120
     };
@@ -127,9 +127,13 @@ var entityList = function (tiles) {
 
 var cachedEntityList = entityList(require('../public/json/levels/level-one.json').tiles);
 
+console.log(cachedEntityList);
+
 var hit = function (r1, r2) {
-  return ((r1.x + r1.width >= r2.x) || (r1.x <= r2.x + r2.width))
-      && ((r1.y + r1.height >= r2.y) || (r1.y <= r2.y + r2.height));
+  return ((r1.x + r1.width >= r2.x)
+            && (r1.x <= r2.x + r2.width))
+      && ((r1.y + r1.height >= r2.y)
+            && (r1.y <= r2.y + r2.height));
 }
 
 SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
@@ -137,13 +141,22 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
   // players
   for (var playerId in this.players) {
     if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId)) {
-      this.players[playerId].x += delta * ((~~controller[playerId].right) - (~~controller[playerId].left)) / 3;
 
-      cachedEntityList.forEach(function (entity) {
-        if (hit(this.players[playerId], entity)) {
-          console.log('hit');
+      this.players[playerId].x += delta * ((~~controller[playerId].right) - (~~controller[playerId].left)) / 3;
+      this.players[playerId].y += delta * ((~~controller[playerId].down) - (~~controller[playerId].up)) / 3;
+      
+      var i, undo = false;
+      for (i = 0; i < cachedEntityList.length; i++) {
+        if (hit(this.players[playerId], cachedEntityList[i])) {
+          undo = true;
+          break;
         }
-      }, this);
+      }
+
+      if (undo) {
+        this.players[playerId].x -= delta * ((~~controller[playerId].right) - (~~controller[playerId].left)) / 3;
+        this.players[playerId].y -= delta * ((~~controller[playerId].down) - (~~controller[playerId].up)) / 3;
+      }
 
     }
   }
