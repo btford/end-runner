@@ -1,0 +1,12 @@
+{
+  "types": [
+    {
+      "shape": [
+        "VV",
+        "VV",
+        "VV"
+      ],
+      "image": "vending-machine"
+    }
+  ]
+}

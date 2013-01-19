@@ -8,13 +8,13 @@ angular.module('gameApp').factory('imageLoader', function (dataLoader, $rootScop
   var toLoad = 1;
 
   var api = {
-    get: function (src) {
-      return cache[src];
+    get: function (spriteName) {
+      return cache[spriteName];
     },
 
-    load: function (src, cb) {
+    load: function (spriteName, src, cb) {
       var img = new Image();
-      cache[src] = img;
+      cache[spriteName] = img;
       img.src = src;
       if (cb) {
         img.onload = cb;
@@ -36,8 +36,8 @@ angular.module('gameApp').factory('imageLoader', function (dataLoader, $rootScop
         }
       };
 
-      angular.forEach(spritesData, function (sprite) {
-        api.load(sprite.img, completeOne);
+      angular.forEach(spritesData, function (spriteSrc, spriteName) {
+        api.load(spriteName, spriteSrc, completeOne);
       });
       
       return api;
