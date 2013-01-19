@@ -78,6 +78,12 @@ var SharedModel = module.exports = function (socketIds) {
   this.timer = 0;
   this.players = {};
   this.zombies = 0;
+  this.zombie = {
+	x: 220,
+	y: 450,
+	width: 60,
+	height: 120
+  };
   // setup default player positions
   socketIds.forEach(function (socketId, playerNumber) {
     this.players[socketId] = {
@@ -99,6 +105,7 @@ SharedModel.prototype.calculate = function (delta, controller) {
 
   this._calculatePlayerMovement(delta, controller);
   this._calculateZombieMovement(delta, controller);
+  this._calculateZombiesMovement(delta, controller);
 }
 
 // helper
@@ -164,6 +171,22 @@ var hit = function (r1, r2) {
 }
 
 SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
+ var target;
+ for (var playerId in this.players) {
+    if (this.players.hasOwnProperty(playerId)) { 
+	     target = this.players[playerId];
+	     if(this.zombie.x - target.x < 100) {
+		this.zombie.x += delta/10;
+	     }
+	     else if(target.x - this.zombie.x < 100) {
+		this.zombie.x -= delta/10;
+	     }		
+	  }
+	}
+	this_(zombie = this.zombie);
+}
+
+SharedModel.prototype._calculateZombiesMovement = function (delta, controller) {
   this_(zombies = this.timer/8);
 }
 
