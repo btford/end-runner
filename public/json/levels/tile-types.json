@@ -2,9 +2,9 @@
   "types": [
     {
       "shape": [
-        "VV",
-        "VV",
-        "VV"
+        "V",
+        "V",
+        "V"
       ],
       "image": "vending-machine"
     }
