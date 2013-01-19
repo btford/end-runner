@@ -112,6 +112,7 @@ SharedModel.prototype.calculate = function (delta, controller) {
   this._calculatePlayerMovement(delta, controller);
   this._calculateZombieMovement(delta, controller);
   this._calculateZombieWallMovement(delta, controller);
+  this._calculatePlayerAttack(delta, controller);
 
   this._calculateButtonPress(delta, controller);
 }
@@ -192,7 +193,8 @@ SharedModel.prototype.initMap = function (tiles) {
             y: tileSize * row,
             width: 60,
             height: 120,
-            frame: 0
+            frame: 0,
+            health: 3
           });
           tiles[row + 1][i] = ' ';
           break;
@@ -288,7 +290,34 @@ SharedModel.prototype._calculateButtonPress = function (delta, controller) {
       this_(gates = this.gates);
     }
   }
-}
+};
+
+SharedModel.prototype._calculatePlayerAttack = function (delta, controller) {
+  
+  var toRemove = [];
+
+  for (var playerId in this.players) {
+    if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId) && controller[playerId].space) {
+      this.zombies.forEach(function (zombie) {
+        if (hit(this.players[playerId], zombie)) {
+          zombie.health -= 1;
+          controller[playerId].space = false;
+
+          if (zombie.health <= 0) {
+            toRemove.push(zombie);
+          }
+        }
+      }, this);
+    }
+  }
+
+  // TODO: remove zombies
+  toRemove.forEach(function (zombie) {
+    zombie.x = -1000;
+  });
+
+  this_(zombies = this.zombies);
+};
 
 SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
 

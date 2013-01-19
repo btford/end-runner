@@ -9,7 +9,8 @@ angular.module('gameApp').factory('gameController', function ($window) {
     left: false,
     right: false,
     up: false,
-    down: false
+    down: false,
+    space: false
   };
 
   var dirty = true;
@@ -19,7 +20,8 @@ angular.module('gameApp').factory('gameController', function ($window) {
     65: 'left',
     68: 'right',
     87: 'up',
-    83: 'down'
+    83: 'down',
+    32: 'space'
   };
 
   // update key states on key events
