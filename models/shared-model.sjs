@@ -229,7 +229,7 @@ SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
     var target, dist;
     var min = zombieChaseThreshold;
 
-    this.zombie.frame = Math.floor(this.timer/100) % 3;
+    zombie.frame = Math.floor(this.timer/100) % 3;
     
     for (var playerId in this.players) {
       if (this.players.hasOwnProperty(playerId)) {
