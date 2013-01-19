@@ -282,6 +282,13 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
       currentPlayer = this.players[playerId];
       currentController = controller[playerId];
 
+      /*
+       * Is the player hit by the zombie?
+       */
+
+      var hitByZombie = hit(currentPlayer, this.zombie);
+
+
       /* 
        * Jump/Fall
        */
@@ -290,7 +297,7 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
         currentPlayer.yVelocity += delta/20;
         player_y = currentPlayer.yVelocity;
       } else if (currentController.up) {
-        currentPlayer.yVelocity = -20;
+        currentPlayer.yVelocity = -20 * (1 / (1 + 2*hitByZombie));
         currentPlayer.jumping = true;
       }
       if (currentPlayer.y > groundY) {
@@ -299,12 +306,11 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
         currentPlayer.jumping = false;
       }
 
-
       /*
        * Movement
        */
 
-      player_x = delta * ((~~currentController.right) - (~~currentController.left)) / 3;
+      player_x = delta * ( 1 / (1 + 1.5*hitByZombie)) * ((~~currentController.right) - (~~currentController.left)) / 3;
   
       currentPlayer.x += player_x;
       currentPlayer.y += player_y;
@@ -334,7 +340,7 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
       }
 
       if (undo) {
-        currentPlayer.x -= delta * ((~~currentController.right) - (~~currentController.left)) / 3;
+        currentPlayer.x -= player_x;
         currentPlayer.y -= player_y;
       }
 
