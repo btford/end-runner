@@ -156,8 +156,6 @@ var entityList = function (tiles) {
 
 var cachedEntityList = entityList(require('../public/json/levels/level-one.json').tiles);
 
-console.log(cachedEntityList);
-
 var hit = function (r1, r2) {
   return ((r1.x + r1.width >= r2.x)
             && (r1.x <= r2.x + r2.width))
@@ -166,7 +164,7 @@ var hit = function (r1, r2) {
 }
 
 SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
-	this_(zombies = this.timer/8);
+  this_(zombies = this.timer/8);
 }
 
 SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
