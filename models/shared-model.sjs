@@ -84,7 +84,9 @@ var SharedModel = module.exports = function (socketIds) {
       x: 20 + 200*playerNumber,
       y: 200,
       width: 120,
-      height: 120
+      height: 120,
+      jumping: false,
+      yVelocity: 0
     };
   }, this);
   
@@ -163,42 +165,63 @@ var hit = function (r1, r2) {
 }
 
 SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
-  var y_velocity = 0;
-  var y_acceleration = 0; 
-  var ground_y = 450;
+
+  var groundY = 450;
+
   var player_y = 0;
+  var player_x = 0;
+
+  var currentPlayer,
+    currentController;
+
   // players
   for (var playerId in this.players) {
     if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId)) { 
 
-      if(this.players[playerId].y < ground_y){
-        y_acceleration = 1;
-        y_velocity = 10;
-        // y_velocity = y_velocity - y_acceleration*zero_time;
-        player_y = y_velocity/1;
+      currentPlayer = this.players[playerId];
+      currentController = controller[playerId];
+
+      /* 
+       * Jump/Fall
+       */
+
+      if (currentPlayer.jumping) {
+        currentPlayer.yVelocity += delta/20;
+        player_y = currentPlayer.yVelocity;
+      } else if (currentController.up) {
+        currentPlayer.yVelocity = -20;
+        currentPlayer.jumping = true;
       }
-      if(this.players[playerId].y >= ground_y){
-        y_acceleration = 0;
-        y_velocity = 0;
+      if (currentPlayer.y > groundY) {
+        currentPlayer.yVelocity = 0;
+        currentPlayer.y = groundY;
+        currentPlayer.jumping = false;
       }
-      if(~~controller[playerId].up){
-        player_y = delta * ((~~controller[playerId].down) - (~~controller[playerId].up)) / 3;
-      }
+
+
+      /*
+       * Movement
+       */
   
-      this.players[playerId].x += delta * ((~~controller[playerId].right) - (~~controller[playerId].left)) / 3;
-      this.players[playerId].y += player_y;
+      currentPlayer.x += delta * ((~~currentController.right) - (~~currentController.left)) / 3;
+      currentPlayer.y += player_y;
+
       
+      /*
+       * Collision detection
+       */
+
       var i, undo = false;
       for (i = 0; i < cachedEntityList.length; i++) {
-        if (hit(this.players[playerId], cachedEntityList[i])) {
+        if (hit(currentPlayer, cachedEntityList[i])) {
           undo = true;
           break;
         }
       }
   
       if (undo) {
-        this.players[playerId].x -= delta * ((~~controller[playerId].right) - (~~controller[playerId].left)) / 3;
-        this.players[playerId].y -= delta * ((~~controller[playerId].down) - (~~controller[playerId].up)) / 3;
+        currentPlayer.x -= delta * ((~~currentController.right) - (~~currentController.left)) / 3;
+        currentPlayer.y -= player_y;
       }
 
     }
