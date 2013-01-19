@@ -96,7 +96,7 @@ angular.module('gameApp').directive('game',
                 clearType(row, i, type);
                 mapContext.drawImage(imageLoader.get(type.image),
                   x, y,
-                  120, 180);
+                  60, 120);
               }
             });
           }
