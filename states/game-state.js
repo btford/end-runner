@@ -8,23 +8,15 @@ var SocketronState = require('socketron').State;
 
 var SharedModel = require('../models/shared-model.js');
 
+var GameOverState = require('./game-over-state');
+
 var GameState = module.exports = function (config) {
   SocketronState.apply(this, arguments);
 
   this.maxPlayers = 4;
   this.numberOfPlayers = 0;
 
-  this.controller = {};
-
-  // NOTE: hack to grab sockets that may/may not have connected
-  var socketIds = [];
-  for (var socketId in this._parent._sockets) {
-    if (this._parent._sockets.hasOwnProperty(socketId)) {
-      socketIds.push(socketId);
-    }
-  }
-  // TODO: name ? GameModel
-  this.model = new SharedModel(socketIds);
+  this.reset();
 
   this.on('update:controller', function (message, state, socket) {
     state.controller[socket.id] = message;
@@ -99,14 +91,12 @@ GameState.prototype.start = function() {
     last = now;
 
     // TODO: end the game somehow
-    /*
-    if (game.timer > 0) {
-      setTimeout(play, 15);
+
+    if (gameModel.isGameOver()) {
+      thisGameState.gameOver();
     } else {
-      thisGameState.broadcast('change:route', '/game-over/' + thisGameState._name);
+      setTimeout(play, 15);
     }
-    */
-    setTimeout(play, 15);
   };
   play();
 
@@ -116,3 +106,25 @@ GameState.prototype.start = function() {
   };
 };
 
+// restart a level
+GameState.prototype.gameOver = function () {
+  var newGameOver = this.substate({
+    type: GameOverState
+  });
+  this.moveAllTo(newGameOver);
+};
+
+GameState.prototype.reset = function () {
+
+  // NOTE: hack to grab sockets that may/may not have connected
+  var socketIds = [];
+  for (var socketId in this._parent._sockets) {
+    if (this._parent._sockets.hasOwnProperty(socketId)) {
+      socketIds.push(socketId);
+    }
+  }
+
+  // TODO: name ? GameModel
+  this.model = new SharedModel(socketIds);
+  this.controller = {};
+};

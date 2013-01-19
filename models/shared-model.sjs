@@ -230,6 +230,21 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
   this_(players = this.players)
 }
 
+// return true iff zombies have overtaken either player
+SharedModel.prototype.isGameOver = function () {
+
+  for (var playerId in this.players) {
+    if (this.players.hasOwnProperty(playerId)) { 
+      currentPlayer = this.players[playerId];
+      if (currentPlayer.x < this.zombies) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 SharedModel.prototype.getChanges = function () {
   var changed = this._changed;
   this._changed = {};
