@@ -127,4 +127,6 @@ GameState.prototype.reset = function () {
   // TODO: name ? GameModel
   this.model = new SharedModel(socketIds);
   this.controller = {};
+
+  this.broadcast('init:shared:model', this.model);
 };

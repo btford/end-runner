@@ -140,7 +140,6 @@ angular.module('gameApp').directive('game',
         background2.style.left = '-' + Math.floor(projectedUpperLeft/2)%1920 + 'px';
 
         var currentPlayer;
-        context.fillStyle = "#000";
         for (prop in model.players) {
           if (model.players.hasOwnProperty(prop)) {
             currentPlayer = model.players[prop];
@@ -155,14 +154,33 @@ angular.module('gameApp').directive('game',
           }
         }
 
-        //draw zombies
+        model.buttons.forEach(function (button) {
+          context.fillStyle = button.pressed ? "#0f0" : "#f00";
+          context.fillRect(
+            realCenterX < canvas.width/2 ?
+              button.x
+              : canvas.width/2 - realCenterX + button.x,
+            button.y,
+            60, 60);
+        });
+
+        model.gates.forEach(function (gate) {
+          context.fillStyle = gate.open ? "#fff" : "#00f";
+          context.fillRect(
+            realCenterX < canvas.width/2 ?
+              gate.x
+              : canvas.width/2 - realCenterX + gate.x,
+            gate.y,
+            gate.width, gate.height);
+        });
+
+        //draw zombie hoard
         context.fillStyle = "#000";
         context.fillRect(0, 0, realCenterX < canvas.width/2 ? model.zombieWall : canvas.width/2 - realCenterX + model.zombieWall, canvas.height);
 	
 	//draw zombie
 	context.fillRect(realCenterX < canvas.width/2 ? model.zombie.x : canvas.width/2 - realCenterX + model.zombie.x, model.zombie.y, 60, 120);
         // send keystrokes
-
         var ctrl = gameController.get();
         if (ctrl) {
           socket.getRaw().emit('update:controller', ctrl);
