@@ -13,6 +13,12 @@ angular.module('gameApp').directive('game',
     link: function (scope, elm, attrs) {
 
       /*
+       * Get background elements
+       */
+
+      var background = elm.find('img')[0];
+
+      /*
        * Render Map
        */
 
@@ -27,17 +33,11 @@ angular.module('gameApp').directive('game',
         levelModel.tiles.forEach(function (col, row) {
           for (var i = 0; i < col.length; i++) {
             switch (col[i]) {
-              case ' ':
-                mapContext.fillStyle = "#fff";
-                break;
-
               case '=':
                 mapContext.fillStyle = "#ccc";
                 break;
-
               default:
-                mapContext.fillStyle = "#ddd";
-                break;
+                continue;
             }
             
             mapContext.fillRect(tileSize * i, tileSize * row, tileSize, tileSize);
@@ -49,22 +49,6 @@ angular.module('gameApp').directive('game',
 
 
       /*
-       * Mock Models
-       */
-
-      var pretendModel = {
-        player1: {
-          x: 5,
-          y: 5
-        },
-        player2: {
-          x: 200,
-          y: 5
-        }
-      };
-
-
-      /*
        * Render Models
        */
 
@@ -73,21 +57,7 @@ angular.module('gameApp').directive('game',
       
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
-
-      scope.$watch(function () {
-        return fullscreen.get();
-      }, function (fullscreenSetting) {
-        if (fullscreenSetting) {
-           canvas.width = $window.document.width;
-           canvas.height = $window.document.height;
-        } else {
-          canvas.width = canvasWidth;
-          canvas.height = canvasHeight;
-        }
-      });
-
       
-
       var render = function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
         // draw some shit
@@ -107,6 +77,9 @@ angular.module('gameApp').directive('game',
 
         projectedUpperLeft = Math.max(realCenterX - canvas.width/2, 0);
         mapCanvas.style.left = '-' + projectedUpperLeft + 'px';
+
+        background.style.left = '-' + Math.floor(projectedUpperLeft/2)%2000 + 'px';
+
         var currentPlayer;
         context.fillStyle = "#000";
         for (prop in model.players) {
@@ -142,6 +115,23 @@ angular.module('gameApp').directive('game',
 
       angular.element(canvas).bind('click', function (ev) {
         // on click ...
+      });
+
+
+      /*
+       * Watch for fullscreen
+       */
+
+      scope.$watch(function () {
+        return fullscreen.get();
+      }, function (fullscreenSetting) {
+        if (fullscreenSetting) {
+           canvas.width = $window.document.width;
+           canvas.height = $window.document.height;
+        } else {
+          canvas.width = canvasWidth;
+          canvas.height = canvasHeight;
+        }
       });
 
 

@@ -48,6 +48,12 @@ game .map {
   /*background-color: rgb(128,128,128);*/
 }
 
+game .background {
+  position: absolute;
+  z-index: -2;
+  /*background-color: rgb(128,128,128);*/
+}
+
 shop {
   display: block;
   position: fixed;
