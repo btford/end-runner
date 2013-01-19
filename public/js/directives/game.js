@@ -23,11 +23,9 @@ angular.module('gameApp').directive('game',
       mapCanvas.height = 1080;
 
       var levelModel = dataLoader.get('/json/levels/level-one.json');
-      
       var renderMap = function () {
         levelModel.tiles.forEach(function (col, row) {
           for (var i = 0; i < col.length; i++) {
-
             switch (col[i]) {
               case ' ':
                 mapContext.fillStyle = "#fff";
@@ -88,16 +86,19 @@ angular.module('gameApp').directive('game',
         }
       });
 
+      
+      	
       var render = function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
-
         // draw some shit
+	projectedUpperLeft = Math.max(sharedModel.get().timer - canvas.width/2, sharedModel.get().timer);
+       mapCanvas.style.left = '-' + projectedUpperLeft + 'px';
         var currentPlayer;
         context.fillStyle = "#000";
         for (var prop in pretendModel) {
           if (pretendModel.hasOwnProperty(prop)) {
             currentPlayer = pretendModel[prop];
-            context.fillRect(currentPlayer.x + sharedModel.get().timer/10, currentPlayer.y, 150, 100);
+            context.fillRect(Math.min(sharedModel.get().timer, canvas.width/2), currentPlayer.y, 150, 100);
           }
         }
 
