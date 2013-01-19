@@ -77,7 +77,7 @@ macro this_ {
 var SharedModel = module.exports = function (socketIds) {
   this.timer = 0;
   this.players = {};
-
+  this.zombies = 0;
   // setup default player positions
   socketIds.forEach(function (socketId, playerNumber) {
     this.players[socketId] = {
@@ -98,6 +98,7 @@ SharedModel.prototype.calculate = function (delta, controller) {
   this_(timer += delta / 10); // this.timer += delta / 10;
 
   this._calculatePlayerMovement(delta, controller);
+  this._calculateZombieMovement(delta, controller);
 }
 
 // helper
@@ -162,6 +163,10 @@ var hit = function (r1, r2) {
             && (r1.x <= r2.x + r2.width))
       && ((r1.y + r1.height >= r2.y)
             && (r1.y <= r2.y + r2.height));
+}
+
+SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
+	this_(zombies = this.timer/8);
 }
 
 SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
