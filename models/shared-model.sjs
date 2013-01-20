@@ -216,7 +216,7 @@ SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
   for (var playerId in this.players) {
     if (this.players.hasOwnProperty(playerId)) { 
       target = this.players[playerId];
-      if((target.x-this.zombie.x) < 500 && (target.x-this.zombie.x) > 5) {
+      if((Math.abs(target.x-this.zombie.x) < 300) && Math.abs(target.x-this.zombie.x) > 5) {
         if(this.zombie.x > target.x) {
           this.zombie.x -= delta/10;
         } else {
