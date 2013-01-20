@@ -5,7 +5,7 @@
         h2 Create or Join a Game!
         ul.unstyled
           li(ng-repeat='(id, lobby) in lobbies')
-            button.btn.btn-large.btn-success(ng-show='lobby.players == 1', ng-click='joinLobby(id)') Join Game {{lobby.name}}
+            button.btn.btn-large.btn-success(ng-click='joinLobby(id)') Join Game {{lobby.name}}
         hr
         fieldset
           button.btn.btn-large(ng-click='newLobby()') Start a Game
