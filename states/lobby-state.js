@@ -11,9 +11,11 @@ var LobbyState = module.exports = function (config) {
   //this.numberOfPlayers = 0;
 
   this.on('start:game', function (message, state, socket) {
+    /*
     if (state.numberOfPlayers < state.maxPlayers) {
       return;
     }
+    */
     var newGameState = state.substate({
       type: GameState
     });

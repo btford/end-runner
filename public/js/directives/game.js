@@ -16,8 +16,8 @@ angular.module('gameApp').directive('game',
        * Get background elements
        */
 
-      var background = elm.find('img')[0];
-      var background2 = elm.find('img')[1];
+      var background = elm.find('img')[1];
+      var background2 = elm.find('img')[2];
 
       /*
        * Render Map

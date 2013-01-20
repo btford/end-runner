@@ -449,8 +449,11 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
        * Animation
        */
 
+      if (~~currentController.space) {
+        currentPlayer.frame = 120;
+      }
       //check for player movement to decide on frame
-      if (~~currentController.right ||
+      else if (~~currentController.right ||
           ~~currentController.left ||
           ~~currentController.up) {
 
