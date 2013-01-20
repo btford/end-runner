@@ -306,7 +306,17 @@ SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
 };
 
 SharedModel.prototype._calculateZombieWallMovement = function (delta, controller) {
-  var incr = Math.cos(this.timer/30) + (.55+this.timer/1800);
+
+  var dist = 0, n = 0;
+  for (var playerId in this.players) {
+    if (this.players.hasOwnProperty(playerId)) {
+      dist = Math.abs(this.zombieWall - this.players[playerId].x);
+      n++;
+    }
+  }
+  dist = dist / n;
+
+  var incr = (1 + 0.3*(dist > 600))*Math.cos(this.timer/30) + (.55+this.timer/1800);
   this_(zombieWall += incr);
 };
 
