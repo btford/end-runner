@@ -353,7 +353,21 @@ SharedModel.prototype._calculatePushBoxes = function (delta, controller) {
     if (this.players.hasOwnProperty(playerId)) {
       this.boxes.forEach(function (box) {
         if (hit(this.players[playerId], box)) {
-          box.x = this.players[playerId].x + this.players[playerId].width;
+
+          // player is on top of box
+          /*
+          if (box.y - (this.players[playerId].y + this.players[playerId].height) < 5) {
+            this.players[playerId].jumping = false;
+            this.players[playerId].yVelocity = 0;
+          } else {
+          */
+          if (this.players[playerId].xVelocity > 0) {
+            box.x = this.players[playerId].x + this.players[playerId].width;
+          } else {
+            box.x = this.players[playerId].x - box.width;
+          }
+          //}
+
         }
       }, this);
     }
@@ -447,6 +461,8 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
       if (undo) {
         currentPlayer.x -= player_x;
         currentPlayer.y -= player_y;
+      } else {
+        currentPlayer.xVelocity = player_x;
       }
 
       /*
