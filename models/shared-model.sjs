@@ -391,7 +391,7 @@ SharedModel.prototype._calculatePushBoxes = function (delta, controller) {
 
 SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
 
-  var groundY = 450;
+  var groundY = 480;
 
   var player_y = 0;
   var player_x = 0;
