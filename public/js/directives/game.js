@@ -129,13 +129,16 @@ angular.module('gameApp').directive('game',
                   x, y,
                   tileSize, tileSize);
             } else if (col[i] === 'V') {
-                levelModel.tiles[row][i+1] = ' ';
+              levelModel.tiles[row][i+1] = ' ';
               mapContext.drawImage(imageLoader.get('vending-machine'),
                   x, y,
                   tileSize, 2*tileSize);
             } else if (col[i] === 'X') {
-                levelModel.tiles[row][i+1] = ' ';
               mapContext.drawImage(imageLoader.get('brick'),
+                  x, y,
+                  tileSize, tileSize);
+            } else if (col[i] === 'H') {
+              mapContext.drawImage(imageLoader.get('hydrant'),
                   x, y,
                   tileSize, tileSize);
             }
