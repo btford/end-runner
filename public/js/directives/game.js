@@ -208,13 +208,15 @@ angular.module('gameApp').directive('game',
 
         // draw gates
         model.gates.forEach(function (gate) {
-          context.fillStyle = gate.open ? "#fff" : "#00f";
-          context.fillRect(
-            realCenterX < canvas.width/2 ?
-              gate.x
-              : canvas.width/2 - realCenterX + gate.x,
-            gate.y,
-            gate.width, gate.height);
+          if (!gate.open) {
+            context.drawImage(
+              imageLoader.get('gate'),
+              realCenterX < canvas.width/2 ?
+                gate.x
+                : canvas.width/2 - realCenterX + gate.x,
+              gate.y,
+              gate.width, gate.height);
+          }
         });
 
         // draw boxes
