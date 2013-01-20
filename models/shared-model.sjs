@@ -74,6 +74,7 @@ macro this_ {
  */
 
 var hit = require('../lib/hit.js');
+var correct = require('../lib/correct.js');
 
 /**
  * Model
@@ -350,7 +351,7 @@ SharedModel.prototype._calculatePlayerAttack = function (delta, controller) {
 SharedModel.prototype._calculatePushBoxes = function (delta, controller) {
   
   for (var playerId in this.players) {
-    if (this.players.hasOwnProperty(playerId)) {
+    if (this.players.hasOwnProperty(playerId) && !this.players[playerId].jumping) {
       this.boxes.forEach(function (box) {
         if (hit(this.players[playerId], box)) {
 
@@ -412,27 +413,24 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
        * Jump/Fall
        */
 
-      if (currentPlayer.jumping) {
-        currentPlayer.yVelocity += delta/20;
-        player_y = currentPlayer.yVelocity;
-      } else if (currentController.up) {
+      currentPlayer.yVelocity += delta/20;
+      
+      if (currentPlayer.y > groundY) {
+        currentPlayer.y = groundY;
+        currentPlayer.yVelocity = 0;
+        currentPlayer.jumping = false;
+      }
+      if (!currentPlayer.jumping && currentController.up) {
         currentPlayer.yVelocity = -20 * (1 / (1 + 2*hitByZombie));
         currentPlayer.jumping = true;
-      }
-      if (currentPlayer.y > groundY) {
-        currentPlayer.yVelocity = 0;
-        currentPlayer.y = groundY;
-        currentPlayer.jumping = false;
       }
 
       /*
        * Movement
        */
 
-      player_x = delta * ( 1 / (1 + 1.5*hitByZombie)) * ((~~currentController.right) - (~~currentController.left)) / 3;
-  
-      currentPlayer.x += player_x;
-      currentPlayer.y += player_y;
+      currentPlayer.x += delta * ( 1 / (1 + 1.5*hitByZombie)) * ((~~currentController.right) - (~~currentController.left)) / 3;
+      currentPlayer.y += currentPlayer.yVelocity;
 
       /*
        * Collision detection
@@ -440,18 +438,17 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
 
       undo = false;
       for (i = 0; i < this.entities.length; i++) {
-        if (hit(currentPlayer, this.entities[i])) {
-          undo = true;
-          break;
-        }
+        correct(currentPlayer, this.entities[i]);
+        break;
       }
 
       // check if we hit a gate
+      /*
       if (!undo) {
         for (i = this.gates.length - 1; i >= 0; i--) {
           if (this.gates[i].open) {
             continue;
-          } else if (hit(this.gates[i], currentPlayer)) {
+          } else if (correct(this.gates[i], currentPlayer)) {
             undo = true;
             break;
           }
@@ -461,9 +458,14 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
       if (undo) {
         currentPlayer.x -= player_x;
         currentPlayer.y -= player_y;
+        if (player_y > 0) {
+          currentPlayer.jumping = false;
+        }
       } else {
         currentPlayer.xVelocity = player_x;
+        currentPlayer.jumping = true;
       }
+      */
 
       /*
        * Animation
