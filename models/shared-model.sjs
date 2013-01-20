@@ -147,7 +147,7 @@ SharedModel.prototype.initMap = function (tiles) {
   tiles.forEach(function (col, row) {
     tiles[row] = col.split('');
   });
-  
+
   this.mapWidth = tileSize * tiles[0].length;
 
   tiles.forEach(function (col, row) {
@@ -441,7 +441,7 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
       // check if we hit a gate
       for (i = this.gates.length - 1; i >= 0; i--) {
         if (!this.gates[i].open) {
-          correct(this.gates[i], currentPlayer);
+          correct(currentPlayer, this.gates[i]);
         }
       }
 

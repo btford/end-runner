@@ -138,6 +138,8 @@ GameState.prototype.reset = function () {
     }
   }
 
+  this.broadcast('restart:level');
+
   // TODO: name ? GameModel
   this.model = new SharedModel({
     players: socketIds,
@@ -146,6 +148,19 @@ GameState.prototype.reset = function () {
   this.controller = {};
 
   this.broadcast('init:shared:model', this.model);
+};
+
+GameState.prototype.playAgain = function () {
+
+  // reset level count and score
+  this.level = 1;
+
+  this.tries = 1;
+  this.score = 0;
+
+  this.broadcast('change:route', '/game/' + this._name);
+
+  this.reset();
 };
 
 GameState.prototype.nextLevel = function () {

@@ -7,11 +7,11 @@ var GameState = require('./game-state');
 var LobbyState = module.exports = function (config) {
   SocketronState.apply(this, arguments);
 
-  this.maxPlayers = 4;
-  this.numberOfPlayers = 0;
+  //this.maxPlayers = 2;
+  //this.numberOfPlayers = 0;
 
   this.on('start:game', function (message, state, socket) {
-    if (socket !== state.leader) {
+    if (state.numberOfPlayers < state.maxPlayers) {
       return;
     }
     var newGameState = state.substate({
@@ -34,6 +34,8 @@ var LobbyState = module.exports = function (config) {
 util.inherits(LobbyState, SocketronState);
 
 LobbyState.prototype.add = function (socket) {
+  this.numberOfPlayers = this.numberOfPlayers || 0;
+  this.maxPlayers = this.maxPlayers || 2;
 
   // limit the number of sockets that can join
   if (this.numberOfPlayers >= this.maxPlayers) {

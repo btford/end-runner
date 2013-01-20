@@ -2,24 +2,26 @@
 'use strict';
 
 angular.module('gameApp').controller('GameScoreCtrl',
-    function ($scope, socket, sharedModel) {
+    function ($scope, $location, socket, sharedModel) {
 
   socket.emit('get:score');
   
-  socket.on('update:score', function (score) {
+  var onUpdateScore = function (score) {
     $scope.score = score;
-  });
+  };
+
+  socket.on('update:score', onUpdateScore);
 
   /*
    * Expose actions to score
    */
 
   $scope.playAgain = function () {
-    // TODO:
+    socket.emit('play:again');
   };
-  
+
   $scope.mainMenu = function () {
-    // TODO:
+    $location.url('/');
   };
 
 
@@ -28,7 +30,7 @@ angular.module('gameApp').controller('GameScoreCtrl',
    */
 
   $scope.$on('$destroy', function () {
-    socket.off('update:lobby', onUpdateLobby);
+    socket.off('update:score', onUpdateScore);
   });
 
 
