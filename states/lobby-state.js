@@ -4,11 +4,15 @@ var util = require('util');
 var SocketronState = require('socketron').State;
 var GameState = require('./game-state');
 
+var humanId = 0;
+
 var LobbyState = module.exports = function (config) {
   SocketronState.apply(this, arguments);
 
   //this.maxPlayers = 2;
   //this.numberOfPlayers = 0;
+
+  this._humanName = (humanId++);
 
   this.on('start:game', function (message, state, socket) {
     /*
@@ -83,6 +87,7 @@ LobbyState.prototype.remove = function (socket) {
 LobbyState.prototype.repr = function () {
   var ret = {
     name: this._name,
+    humanName: this._humanName,
     players: [],
     leader: true
   };
