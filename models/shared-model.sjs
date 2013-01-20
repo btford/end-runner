@@ -89,7 +89,8 @@ var SharedModel = module.exports = function (socketIds) {
     x: 220,
     y: 450,
     width: 60,
-    height: 120
+    height: 120,
+    frame: 0
   };
 
   
@@ -212,7 +213,7 @@ SharedModel.prototype.initMap = function (tiles) {
 
 SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
   var target;
-  
+  this.zombie.frame = Math.floor(this.timer/100) % 3;
   for (var playerId in this.players) {
     if (this.players.hasOwnProperty(playerId)) { 
       target = this.players[playerId];

@@ -180,7 +180,7 @@ angular.module('gameApp').directive('game',
 	
         //draw zombie
         context.drawImage(imageLoader.get('zombie'),
-          0, 0,
+          model.zombie.frame*60, 0,
           60, 120,
           realCenterX < canvas.width/2 ?
             model.zombie.x
