@@ -90,21 +90,6 @@ angular.module('gameApp').directive('game',
         mapCanvas.width = tileSize * levelModel.tiles[0].length;
         mapCanvas.height = tileSize * levelModel.tiles.length;
 
-        levelModel.tiles.forEach(function (col, row) {
-          for (var i = 0; i < col.length; i++) {
-            var x = tileSize * i,
-              y = tileSize * row;
-
-            tileTypes.types.forEach(function (type) {
-              if (isType(row, i, type)) {
-                clearType(row, i, type);
-                mapContext.drawImage(imageLoader.get(type.image),
-                  x, y,
-                  type.width, type.height);
-              }
-            });
-          }
-        });
 
         // render hints for 1st level
         if (sharedModel.get().level === 1) {
@@ -125,6 +110,38 @@ angular.module('gameApp').directive('game',
             2100, 100,
             480, 300);
         }
+
+        levelModel.tiles.forEach(function (col, row) {
+          for (var i = 0; i < col.length; i++) {
+            var x = tileSize * i,
+              y = tileSize * row;
+
+            if (col[i] === ' ') {
+              // noop
+            } else if (col[i] === 'c') {
+              col[i+1] = ' ';
+              col[i+2] = ' ';
+              mapContext.drawImage(imageLoader.get('car'),
+                  x, y,
+                  tileSize*3, tileSize);
+            } else if (col[i] === '|') {
+              mapContext.drawImage(imageLoader.get('gate'),
+                  x, y,
+                  tileSize, tileSize);
+            } else if (col[i] === 'V') {
+                levelModel.tiles[row][i+1] = ' ';
+              mapContext.drawImage(imageLoader.get('vending-machine'),
+                  x, y,
+                  tileSize, 2*tileSize);
+            } else if (col[i] === 'X') {
+                levelModel.tiles[row][i+1] = ' ';
+              mapContext.drawImage(imageLoader.get('brick'),
+                  x, y,
+                  tileSize, tileSize);
+            }
+          }
+        });
+
 
       };
 
