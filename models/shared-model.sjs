@@ -102,10 +102,13 @@ var SharedModel = module.exports = function (config) {
     this.players[socketId] = {
       x: 20 + 200*playerNumber,
       y: 200,
+      frame: 0,
+      frameType: 0,
       width: 60,
       height: 120,
       jumping: false,
       yVelocity: 0,
+      toAttack: 0,
       frame: 0
     };
   }, this);
@@ -230,7 +233,7 @@ SharedModel.prototype.initMap = function (tiles) {
             width: 60,
             height: 120,
             frame: 0,
-            health: 3
+            health: 10
           });
           tiles[row + 1][i] = ' ';
           break;
@@ -339,7 +342,10 @@ SharedModel.prototype._calculatePlayerAttack = function (delta, controller) {
   var toRemove = [];
 
   for (var playerId in this.players) {
-    if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId) && controller[playerId].space) {
+    if (this.players[playerId].toAttack > 0) {
+      this.players[playerId].toAttack -= delta;
+    } else if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId) && controller[playerId].space) {
+      this.players[playerId].toAttack = 100;
       this.zombies.forEach(function (zombie) {
         if (hit(this.players[playerId], zombie)) {
           zombie.health -= 1;
@@ -450,19 +456,26 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
        */
 
       if (~~currentController.space) {
-        currentPlayer.frame = 120;
+
+        currentPlayer.frameType = 120;
+        currentPlayer.frameTypeMaxFrames = 2;
       }
       //check for player movement to decide on frame
       else if (~~currentController.right ||
           ~~currentController.left ||
           ~~currentController.up) {
 
-        currentPlayer.frame = 240;
+        currentPlayer.frameType = 240;
+        currentPlayer.frameTypeMaxFrames = 3;
+
       } else {
         // else if(controller for zombie attack pressed
-        // currentPlayer.frame = 120;
-        currentPlayer.frame = 0;
+        // currentPlayer.frameType = 120;
+        currentPlayer.frameType = 0;
+        currentPlayer.frameTypeMaxFrames = 1;
       }
+      
+      currentPlayer.frame = 60*(Math.floor(this.timer / 10) % currentPlayer.frameTypeMaxFrames);
 
     }
   }

@@ -226,7 +226,7 @@ angular.module('gameApp').directive('game',
           if (model.players.hasOwnProperty(prop)) {
             currentPlayer = model.players[prop];
             context.drawImage(imageLoader.get('player' + playerIndex),
-              0, currentPlayer.frame,
+              currentPlayer.frame, currentPlayer.frameType,
               60, 120,
               realCenterX < canvas.width/2 ?
                 currentPlayer.x
