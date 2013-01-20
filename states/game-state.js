@@ -9,6 +9,7 @@ var SocketronState = require('socketron').State;
 var SharedModel = require('../models/shared-model.js');
 
 var GameOverState = require('./game-over-state');
+var GameScoreState = require('./game-score-state');
 
 var GameState = module.exports = function (config) {
   SocketronState.apply(this, arguments);
@@ -16,12 +17,20 @@ var GameState = module.exports = function (config) {
   this.maxPlayers = 4;
   this.numberOfPlayers = 0;
 
+  this.maxLevel = 2;
   this.level = 1;
+
+  this.tries = 1;
+  this.score = 0;
 
   this.reset();
 
   this.on('update:controller', function (message, state, socket) {
     state.controller[socket.id] = message;
+  });
+
+  this.on('get:score', function (message, state, socket) {
+    socket.emit('init:score', state.score);
   });
 };
 
@@ -95,7 +104,6 @@ GameState.prototype.start = function() {
     // TODO: end the game somehow
 
     if (gameModel.isNextLevel()) {
-      console.log('game over');
       thisGameState.nextLevel();
     } else if (gameModel.isGameOver()) {
       thisGameState.gameOver();
@@ -117,6 +125,7 @@ GameState.prototype.gameOver = function () {
     type: GameOverState
   });
   this.moveAllTo(newGameOver);
+  this.tries += 1;
 };
 
 GameState.prototype.reset = function () {
@@ -140,7 +149,18 @@ GameState.prototype.reset = function () {
 };
 
 GameState.prototype.nextLevel = function () {
+  this.score += Math.ceil(1000 / Math.sqrt(this.tries));
+  this.tries = 1;
   this.level += 1;
-  this.reset();
-  this.start();
+
+  if (this.level > this.maxLevel) {
+    var scoreState = this.substate({
+      type: GameScoreState
+    });
+    this.moveAllTo(scoreState);
+    this.broadcast('change:route', '/game-score/' + this._name);
+  } else {
+    this.reset();
+    this.start();
+  }
 };

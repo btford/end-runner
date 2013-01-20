@@ -19,6 +19,10 @@ angular.module('gameApp', []).config(function ($routeProvider, $locationProvider
       templateUrl: 'partials/game-over',
       controller: 'GameOverCtrl'
     })
+    .when('/game-score/:id', {
+      templateUrl: 'partials/game-score',
+      controller: 'GameScoreCtrl'
+    })
     .when('/test-sprite', {
       templateUrl: 'partials/test-sprite',
       controller: 'TestSpriteCtrl'
