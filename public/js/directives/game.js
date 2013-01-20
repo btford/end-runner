@@ -330,7 +330,7 @@ angular.module('gameApp').directive('game',
         for (prop in model.players) {
           if (model.players.hasOwnProperty(prop)) {
             currentPlayer = model.players[prop];
-            context.fillStyle = playerIndex ? "#f00" : "#00f";
+            context.fillStyle = playerIndex ? "#00f" : "#f00";
             context.fillRect(
               canvas.width/2 - 200 + 400*(currentPlayer.x / (tileSize * levelModel.tiles[0].length)),
               15,
