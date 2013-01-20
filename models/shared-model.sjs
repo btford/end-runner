@@ -97,7 +97,8 @@ var SharedModel = module.exports = function (socketIds) {
       width: 60,
       height: 120,
       jumping: false,
-      yVelocity: 0
+      yVelocity: 0,
+      frame: 0
     };
   }, this);
   
@@ -370,7 +371,16 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
           }
         }
       }
-
+	
+      //check for player movement to decide on frame
+      if(~~currentController.right || ~~currentController.left || ~~currentController.up){
+	currentPlayer.frame = 240;
+      }
+     // else if(controller for zombie attack pressed
+     // currentPlayer.frame = 120;
+      else{
+	currentPlayer.frame = 0;
+      }
       if (undo) {
         currentPlayer.x -= player_x;
         currentPlayer.y -= player_y;
