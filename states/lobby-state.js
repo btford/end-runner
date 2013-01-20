@@ -65,6 +65,7 @@ LobbyState.prototype.remove = function (socket) {
   this.numberOfPlayers -= 1;
   if (this.numberOfPlayers < 0) {
     this.numberOfPlayers = 0;
+    this._router.getSubstate('globalLobby').model.removeLobby(this);
   }
 
   if (!SocketronState.prototype.remove.apply(this, arguments)) {
@@ -72,6 +73,8 @@ LobbyState.prototype.remove = function (socket) {
   }
   this._router.getSubstate('globalLobby').add(socket);
   this.broadcast('update:lobby', this.repr());
+
+
 
   return true;
 };

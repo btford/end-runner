@@ -85,6 +85,8 @@ GameState.prototype.repr = function () {
 
 GameState.prototype.start = function() {
 
+  this._router.getSubstate('globalLobby').model.removeLobby(this._parent);
+
   var gameModel = this.model;
   var thisGameState = this;
   var thisControllerModel = this.controller;
