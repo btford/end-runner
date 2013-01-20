@@ -142,9 +142,13 @@ SharedModel.prototype.initMap = function (tiles) {
   this.boxes = [];
 
 
+
+
   tiles.forEach(function (col, row) {
     tiles[row] = col.split('');
   });
+  
+  this.mapWidth = tileSize * tiles[0].length;
 
   tiles.forEach(function (col, row) {
     for (var i = 0; i < col.length; i++) {
@@ -176,6 +180,9 @@ SharedModel.prototype.initMap = function (tiles) {
           });
           break;
 
+        // box
+        // BB
+        // BB
         case 'B':
           // TODO: fix button hitbox here
           this.boxes.push({
@@ -250,6 +257,12 @@ SharedModel.prototype.initMap = function (tiles) {
       }
     }
   }, this);
+
+  // sort buttons
+  this.buttons.sort(function (a, b) {
+    return (a.x) > (b.x) ? -1 : 1
+  });
+
 };
 
 
@@ -474,7 +487,7 @@ SharedModel.prototype.isNextLevel = function () {
   for (var playerId in this.players) {
     if (this.players.hasOwnProperty(playerId)) { 
       currentPlayer = this.players[playerId];
-      if (currentPlayer.x > 2000) {
+      if (currentPlayer.x > this.mapWidth) {
         return true;
       }
     }

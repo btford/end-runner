@@ -75,7 +75,7 @@ angular.module('gameApp').directive('game',
         return true;
       };
 
-      var clearType = function (col, row, type) {
+      var clearType = function (row, col, type) {
         var typeRow;
         for (var i = 0; i < type.shape.length; i++) {
           typeRow = type.shape[i];
@@ -86,6 +86,9 @@ angular.module('gameApp').directive('game',
       };
 
       var renderMap = function () {
+        mapCanvas.width = tileSize * levelModel.tiles[0].length;
+        mapCanvas.height = tileSize * levelModel.tiles.length;
+
         levelModel.tiles.forEach(function (col, row) {
           for (var i = 0; i < col.length; i++) {
             var x = tileSize * i,
@@ -137,8 +140,18 @@ angular.module('gameApp').directive('game',
         });
 
         renderMap();
-
       });
+
+      // TODO:
+      /*
+      socket.getRaw().on('update:countdown', function (message) {
+        if (message === 0) {
+
+        } else {
+
+        }
+      })
+      */
 
 
       /*
