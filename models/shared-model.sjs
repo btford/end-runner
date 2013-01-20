@@ -91,8 +91,8 @@ var SharedModel = module.exports = function (config) {
   this.level = config.level;
 
   // TODO: 
-  if (this.level > 2) {
-    this.level = 2;
+  if (this.level > 5) {
+    this.level = 5;
   }
 
   this.initMap(JSON.parse(JSON.stringify(require('../public/json/levels/level-' + this.level + '.json').tiles)));
@@ -100,7 +100,7 @@ var SharedModel = module.exports = function (config) {
   // setup default player positions
   socketIds.forEach(function (socketId, playerNumber) {
     this.players[socketId] = {
-      x: 20 + 200*playerNumber,
+      x: 300 + 200*playerNumber,
       y: 200,
       frame: 0,
       frameType: 0,
@@ -301,7 +301,8 @@ SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
 };
 
 SharedModel.prototype._calculateZombieWallMovement = function (delta, controller) {
-  this_(zombieWall = this.timer/8);
+  var incr = Math.cos(this.timer/30) + .55;
+  this_(zombieWall += incr);
 };
 
 // assumptions: buttons always paired

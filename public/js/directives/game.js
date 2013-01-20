@@ -16,6 +16,7 @@ angular.module('gameApp').directive('game',
        * Get background elements
        */
 
+      //var hoarde = elm.find('img')[0];
       var background = elm.find('img')[1];
       var background2 = elm.find('img')[2];
 
@@ -184,6 +185,13 @@ angular.module('gameApp').directive('game',
         projectedUpperLeft = Math.max(realCenterX - canvas.width/2, 0);
         mapCanvas.style.left = '-' + projectedUpperLeft + 'px';
 
+        /*
+        hoarde.style.left = +
+          ((realCenterX < canvas.width/2 ?
+            model.zombieWall
+            : canvas.width/2 - realCenterX + model.zombieWall) - 1920) + 'px';
+        */
+
         background.style.left = '-' + Math.floor(projectedUpperLeft/3)%1920 + 'px';
         background2.style.left = '-' + Math.floor(projectedUpperLeft/2)%1920 + 'px';
 
@@ -237,12 +245,18 @@ angular.module('gameApp').directive('game',
         }
 
         //draw zombie hoard
-        context.fillStyle = "#000";
-        context.fillRect(0, 0,
-          realCenterX < canvas.width/2 ?
+        
+        
+        context.drawImage(imageLoader.get('zombie-horde'),
+          0, 0,
+          1920, 1080,
+          (realCenterX < canvas.width/2 ?
             model.zombieWall
-            : canvas.width/2 - realCenterX + model.zombieWall,
-          canvas.height);
+            : canvas.width/2 - realCenterX + model.zombieWall) - 1874,
+          0,
+          1920,
+          1080);
+
 	
         //draw zombies
         model.zombies.forEach(function (zombie) {

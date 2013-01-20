@@ -17,7 +17,7 @@ var GameState = module.exports = function (config) {
   this.maxPlayers = 4;
   this.numberOfPlayers = 0;
 
-  this.maxLevel = 2;
+  this.maxLevel = 5;
   this.level = 1;
 
   this.tries = 1;
@@ -164,7 +164,7 @@ GameState.prototype.playAgain = function () {
 };
 
 GameState.prototype.nextLevel = function () {
-  this.score += Math.ceil(1000 / Math.sqrt(this.tries));
+  this.score += Math.ceil(1000000 / Math.sqrt(this.tries) * Math.sqrt(this.model.timer));
   this.tries = 1;
   this.level += 1;
 

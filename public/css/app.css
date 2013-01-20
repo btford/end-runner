@@ -55,6 +55,16 @@ game .background {
   /*background-color: rgb(128,128,128);*/
 }
 
+game .horde {
+  position: absolute;
+  /* z-index: -2; */
+  max-width: none;
+  
+  -webkit-transform: translateZ(0);
+
+  /*background-color: rgb(128,128,128);*/
+}
+
 restart-dialog {
   display: block;
   position: fixed;
@@ -71,7 +81,8 @@ restart-dialog {
   padding: 50px;
   margin: 50px;
 
-  background-color: #fff; /* fallback */
+  /* fallback */
+  /* background-color: #fff; */
   background-color: rgba(255,255,255,0.8);
 }
 

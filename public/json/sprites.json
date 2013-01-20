@@ -6,5 +6,6 @@
   "red-button": "/img/buttonred.png",
   "green-button": "/img/buttongreen.png",
   "crate": "/img/crate.png",
-  "brick": "/img/brick.png"
+  "brick": "/img/brick.png",
+  "zombie-horde": "/img/zombiehorde.png"
 }
