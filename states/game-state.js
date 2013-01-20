@@ -166,7 +166,7 @@ GameState.prototype.playAgain = function () {
 };
 
 GameState.prototype.nextLevel = function () {
-  this.score += Math.ceil(1000000 / Math.sqrt(this.tries) * Math.sqrt(this.model.timer));
+  this.score += Math.ceil(100000 / (Math.sqrt(this.tries) * Math.sqrt(this.model.timer)));
   this.tries = 1;
   this.level += 1;
 

@@ -32,6 +32,7 @@ app.configure('development', function(){
 });
 
 app.configure('production', function(){
+  io.set('log level', 1);
   app.use(express.errorHandler());
 });
 

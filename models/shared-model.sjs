@@ -310,14 +310,14 @@ SharedModel.prototype._calculateZombieWallMovement = function (delta, controller
   var dist = 0, n = 0;
   for (var playerId in this.players) {
     if (this.players.hasOwnProperty(playerId)) {
-      dist = Math.abs(this.zombieWall - this.players[playerId].x);
+      dist += Math.abs(this.zombieWall - this.players[playerId].x);
       n++;
     }
   }
   dist = dist / n;
-
-  var incr = (1 + 0.3*(dist > 600))*Math.cos(this.timer/30) + (.55+this.timer/1800);
-  this_(zombieWall += incr);
+  // console.log(dist);
+  var incr = (1.5 + 1.5*(dist > 600))*Math.cos(this.timer/30) + (.55+this.timer/1200);
+  this_(zombieWall += 2*incr);
 };
 
 // assumptions: buttons always paired
