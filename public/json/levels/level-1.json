@@ -1,15 +1,23 @@
 {
   "tiles": [
-    "                                                                                                                                ",
-    "                                                                         b  b   |                                               ",
-    "                                                                                |                                               ",
-    "                                                                                |                                               ",
-    "                   BB                   XX    BB                                |                                               ",
-    "                   BB              XX   XX    BB                                |                                               ",
-    "                                   XX                                           |     BB                X          BB           ",
-    "            X                                                                   |     BB                X    X     BB           ",
-    "            X                                                                   |                  X    X    X                  ",
-    "        X   X   X z  z         BB    z        z z               z  BB     z     |       z     X    X    X    X  z zz z z        ",
-    "        X   X   X              BB                                  BB           |             X    X    X    X                  "
- ]
+    "                                                                         X   ",
+    "                                                                         X   ",
+    "                                                                         X   ",
+    "                                                                b        X   ",
+    "                                                X                    b   X   ",
+    "                                                X                        X   ",
+    "                                     BB         X                        |   ",
+    "                                     BB      =  X                        |   ",
+    "                z            V       BB         X               V    V   |   ",
+    "                             V       BB      =  X               V    V   |   ",
+    "   XXXXXXXXXXXXX                                                             ",
+    "                                                                             ",
+    "                                                                             ",
+    "                                                                             ",
+    "                                                                             ",
+    "                                                                             ",
+    "                                                                             ",
+    "                                                                             ",
+    "================================"
+  ]
 }
