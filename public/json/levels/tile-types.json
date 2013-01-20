@@ -6,6 +6,12 @@
         "V"
       ],
       "image": "vending-machine"
+    },
+    {
+      "shape": [
+        "X"
+      ],
+      "image": "brick"
     }
   ]
 }

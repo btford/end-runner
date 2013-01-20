@@ -4,5 +4,7 @@
   "player1": "/img/template2.png",
   "zombie": "/img/zombie.png",
   "red-button": "/img/buttonred.png",
-  "green-button": "/img/buttongreen.png"
+  "green-button": "/img/buttongreen.png",
+  "crate": "/img/crate.png",
+  "brick": "/img/brick.png"
 }

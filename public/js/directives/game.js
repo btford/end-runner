@@ -200,8 +200,7 @@ angular.module('gameApp').directive('game',
 
         // draw boxes
         model.boxes.forEach(function (box) {
-          context.fillStyle = "#3bc";
-          context.fillRect(
+          context.drawImage(imageLoader.get('crate'),
             realCenterX < canvas.width/2 ?
               box.x
               : canvas.width/2 - realCenterX + box.x,
