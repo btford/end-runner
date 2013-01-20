@@ -208,11 +208,11 @@ angular.module('gameApp').directive('game',
         });
 
         // draw players
-        var currentPlayer;
+        var currentPlayer, playerIndex = 0;
         for (prop in model.players) {
           if (model.players.hasOwnProperty(prop)) {
             currentPlayer = model.players[prop];
-            context.drawImage(imageLoader.get('player'),
+            context.drawImage(imageLoader.get('player' + playerIndex),
               0, currentPlayer.frame,
               60, 120,
               realCenterX < canvas.width/2 ?
@@ -220,6 +220,7 @@ angular.module('gameApp').directive('game',
                 : canvas.width/2 - realCenterX + currentPlayer.x,
               currentPlayer.y,
               60, 120);
+            playerIndex += 1;
           }
         }
 
