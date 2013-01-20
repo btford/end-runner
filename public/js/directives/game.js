@@ -157,10 +157,10 @@ angular.module('gameApp').directive('game',
 
         //draw zombies
         context.fillStyle = "#000";
-        context.fillRect(0, 0, realCenterX < canvas.width/2 ? model.zombies : canvas.width/2 - realCenterX + model.zombies, canvas.height);
+        context.fillRect(0, 0, realCenterX < canvas.width/2 ? model.zombieWall : canvas.width/2 - realCenterX + model.zombieWall, canvas.height);
 	
 	//draw zombie
-	context.fillRect(model.zombie.x, model.zombie.y, 60, 120);
+	context.fillRect(realCenterX < canvas.width/2 ? model.zombie.x : canvas.width/2 - realCenterX + model.zombie.x, model.zombie.y, 60, 120);
         // send keystrokes
 
         var ctrl = gameController.get();

@@ -77,7 +77,7 @@ macro this_ {
 var SharedModel = module.exports = function (socketIds) {
   this.timer = 0;
   this.players = {};
-  this.zombies = 0;
+  this.zombieWall = 0;
   this.zombie = {
 	x: 220,
 	y: 450,
@@ -105,7 +105,7 @@ SharedModel.prototype.calculate = function (delta, controller) {
 
   this._calculatePlayerMovement(delta, controller);
   this._calculateZombieMovement(delta, controller);
-  this._calculateZombiesMovement(delta, controller);
+  this._calculateZombieWallMovement(delta, controller);
 }
 
 // helper
@@ -175,19 +175,21 @@ SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
  for (var playerId in this.players) {
     if (this.players.hasOwnProperty(playerId)) { 
 	     target = this.players[playerId];
-	     if(this.zombie.x - target.x < 100) {
-		this.zombie.x += delta/10;
-	     }
-	     else if(target.x - this.zombie.x < 100) {
-		this.zombie.x -= delta/10;
-	     }		
-	  }
+	     if((target.x-this.zombie.x) < 500 && (target.x-this.zombie.x) > 5) {
+		if(this.zombie.x > target.x) {
+		  this.zombie.x -= delta/10;
+		}
+		else{
+		  this.zombie.x += delta/10;	
+		}
+	      }
 	}
+    }
 	this_(zombie = this.zombie);
 }
 
-SharedModel.prototype._calculateZombiesMovement = function (delta, controller) {
-  this_(zombies = this.timer/8);
+SharedModel.prototype._calculateZombieWallMovement = function (delta, controller) {
+  this_(zombieWall = this.timer/8);
 }
 
 SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
@@ -259,7 +261,7 @@ SharedModel.prototype.isGameOver = function () {
   for (var playerId in this.players) {
     if (this.players.hasOwnProperty(playerId)) { 
       currentPlayer = this.players[playerId];
-      if (currentPlayer.x < this.zombies) {
+      if (currentPlayer.x < this.zombieWall) {
         return true;
       }
     }
