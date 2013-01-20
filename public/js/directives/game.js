@@ -114,15 +114,15 @@ angular.module('gameApp').directive('game',
             480, 300);
           mapContext.drawImage(
             imageLoader.get('text2'),
-            500, 100,
+            700, 100,
             480, 300);
           mapContext.drawImage(
             imageLoader.get('text3'),
-            1000, 100,
+            3200, 100,
             480, 300);
           mapContext.drawImage(
             imageLoader.get('text4'),
-            1500, 100,
+            2100, 100,
             480, 300);
         }
 
