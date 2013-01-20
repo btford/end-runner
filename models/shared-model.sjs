@@ -79,15 +79,22 @@ var hit = require('../lib/hit.js');
  * Model
  */
 
-var SharedModel = module.exports = function (socketIds) {
+var SharedModel = module.exports = function (config) {
   this.timer = 0;
   this.players = {};
 
   this.zombieWall = 0;
   this.zombies = [];
 
+  var socketIds = config.players;
+  this.level = config.level;
 
-  this.initMap(JSON.parse(JSON.stringify(require('../public/json/levels/level-one.json').tiles)));
+  // TODO: 
+  if (this.level > 2) {
+    this.level = 2;
+  }
+
+  this.initMap(JSON.parse(JSON.stringify(require('../public/json/levels/level-' + this.level + '.json').tiles)));
 
   // setup default player positions
   socketIds.forEach(function (socketId, playerNumber) {
@@ -400,19 +407,26 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
           }
         }
       }
-	
-      //check for player movement to decide on frame
-      if(~~currentController.right || ~~currentController.left || ~~currentController.up){
-	currentPlayer.frame = 240;
-      }
-     // else if(controller for zombie attack pressed
-     // currentPlayer.frame = 120;
-      else{
-	currentPlayer.frame = 0;
-      }
+
       if (undo) {
         currentPlayer.x -= player_x;
         currentPlayer.y -= player_y;
+      }
+
+      /*
+       * Animation
+       */
+
+      //check for player movement to decide on frame
+      if (~~currentController.right ||
+          ~~currentController.left ||
+          ~~currentController.up) {
+
+        currentPlayer.frame = 240;
+      } else {
+        // else if(controller for zombie attack pressed
+        // currentPlayer.frame = 120;
+        currentPlayer.frame = 0;
       }
 
     }
@@ -427,6 +441,21 @@ SharedModel.prototype.isGameOver = function () {
     if (this.players.hasOwnProperty(playerId)) { 
       currentPlayer = this.players[playerId];
       if (currentPlayer.x < this.zombieWall) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+// return true iff zombies have overtaken either player
+SharedModel.prototype.isNextLevel = function () {
+
+  for (var playerId in this.players) {
+    if (this.players.hasOwnProperty(playerId)) { 
+      currentPlayer = this.players[playerId];
+      if (currentPlayer.x > 2000) {
         return true;
       }
     }

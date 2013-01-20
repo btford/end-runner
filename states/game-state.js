@@ -16,6 +16,8 @@ var GameState = module.exports = function (config) {
   this.maxPlayers = 4;
   this.numberOfPlayers = 0;
 
+  this.level = 1;
+
   this.reset();
 
   this.on('update:controller', function (message, state, socket) {
@@ -92,7 +94,10 @@ GameState.prototype.start = function() {
 
     // TODO: end the game somehow
 
-    if (gameModel.isGameOver()) {
+    if (gameModel.isNextLevel()) {
+      console.log('game over');
+      thisGameState.nextLevel();
+    } else if (gameModel.isGameOver()) {
       thisGameState.gameOver();
     } else {
       setTimeout(play, 15);
@@ -125,8 +130,17 @@ GameState.prototype.reset = function () {
   }
 
   // TODO: name ? GameModel
-  this.model = new SharedModel(socketIds);
+  this.model = new SharedModel({
+    players: socketIds,
+    level: this.level
+  });
   this.controller = {};
 
   this.broadcast('init:shared:model', this.model);
+};
+
+GameState.prototype.nextLevel = function () {
+  this.level += 1;
+  this.reset();
+  this.start();
 };

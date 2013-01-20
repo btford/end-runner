@@ -5,7 +5,8 @@ angular.module('gameApp').factory('dataLoader', function ($http) {
 
   var resources = [
     '/json/sprites.json',
-    '/json/levels/level-one.json',
+    '/json/levels/level-1.json',
+    '/json/levels/level-2.json',
     '/json/levels/tile-types.json'
   ];
   var toLoad = resources.length;

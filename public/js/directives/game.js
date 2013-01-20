@@ -34,7 +34,7 @@ angular.module('gameApp').directive('game',
        */
 
       // TODO: clean up how this is copied
-      var levelModel = angular.copy(dataLoader.get('/json/levels/level-one.json'));
+      var levelModel = angular.copy(dataLoader.get('/json/levels/level-1.json'));
       // split strings into arrays
       levelModel.tiles.forEach(function (col, row) {
         levelModel.tiles[row] = col.split('');
@@ -104,6 +104,41 @@ angular.module('gameApp').directive('game',
       };
 
       renderMap();
+
+      /*
+       * Render map again on level change
+       */
+
+      socket.getRaw().on('init:shared:model', function () {
+        mapContext.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+        
+        // TODO: DRY
+
+        // TODO: clean up how this is copied
+        levelModel = angular.copy(dataLoader.get('/json/levels/level-' + sharedModel.get().level + '.json'));
+        // split strings into arrays
+        levelModel.tiles.forEach(function (col, row) {
+          levelModel.tiles[row] = col.split('');
+        });
+
+        // TODO: clean up how this is copied
+        tileTypes = angular.copy(dataLoader.get('/json/levels/tile-types.json'));
+        // split strings into arrays
+        tileTypes.types.forEach(function (type) {
+          type.shape.forEach(function (row, rowIndex) {
+            type.shape[rowIndex] =  row.split('');
+          });
+        });
+
+        // augment type data for faster init render
+        tileTypes.types.forEach(function (type) {
+          // TODO: this assumption might break down
+          type.firstChar = type.shape[0][0];
+        });
+
+        renderMap();
+
+      });
 
 
       /*
@@ -211,9 +246,11 @@ angular.module('gameApp').directive('game',
        * Bind Events
        */
 
+       /*
       angular.element(canvas).bind('click', function (ev) {
         // on click ...
       });
+      */
 
 
       /*
