@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('gameApp').controller('GameCtrl',
-    function ($scope, socket, $routeParams) {
+    function ($scope, socket, $routeParams, sound) {
 
   // TODO: send a request to join this game if possible
 
@@ -11,5 +11,7 @@ angular.module('gameApp').controller('GameCtrl',
   socket.on('level:failed', function () {
     $scope.showDialog = true;
   });
+
+  sound.bgm();
 
 });

@@ -11,7 +11,7 @@ angular.module('gameApp').factory('sound', function ($http) {
     .success(function (data) {
       angular.forEach(data, function (soundUrl, soundName) {
         sounds[soundName] = new buzz.sound(soundUrl, {
-          formats: ["mp3", "wav"],
+          formats: ["mp3"],
           preload: true
         });
       });
@@ -22,6 +22,11 @@ angular.module('gameApp').factory('sound', function ($http) {
       if (sounds[soundName]) {
         sounds[soundName].setVolume(volume || 80)
           .play();
+      }
+    },
+    bgm: function () {
+      if (sounds['bgm']) {
+        sounds['bgm'].loop().play();
       }
     }
   };

@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('gameApp').controller('AppCtrl',
-    function ($scope, $location, fullscreen, dataLoader, imageLoader, remoteRouter) {
+    function ($scope, $location, fullscreen, dataLoader, imageLoader, remoteRouter, sound) {
 
   /**
    * When first loaded, take the player to a loading screen

@@ -357,6 +357,8 @@ SharedModel.prototype._calculatePlayerAttack = function (delta, controller) {
           zombie.health -= 1;
           controller[playerId].space = false;
 
+          this._changed.attackSound = true;
+
           if (zombie.health <= 0) {
             toRemove.push(zombie);
           }

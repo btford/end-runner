@@ -4,7 +4,7 @@
 
 'use strict';
 
-angular.module('gameApp').factory('sharedModel', function (socket) {
+angular.module('gameApp').factory('sharedModel', function (socket, sound) {
 
   // unwrapped socket; will not cause digest cycles in AngularJS
   var rawSocket = socket.getRaw();
@@ -43,6 +43,11 @@ angular.module('gameApp').factory('sharedModel', function (socket) {
         set(shared, path, pairs);
       }
     });
+
+    if (shared.attackSound) {
+      sound.play('attack');
+      shared.attackSound = false;
+    }
   });
 
   return {
