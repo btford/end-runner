@@ -100,7 +100,7 @@ angular.module('gameApp').directive('game',
                 clearType(row, i, type);
                 mapContext.drawImage(imageLoader.get(type.image),
                   x, y,
-                  60, 120);
+                  type.width, type.height);
               }
             });
           }
@@ -197,23 +197,13 @@ angular.module('gameApp').directive('game',
 
         // draw buttons
         model.buttons.forEach(function (button) {
-          context.fillStyle = button.pressed ? "#0f0" : "#f00";
-          context.fillRect(
+          context.drawImage(
+            button.pressed ? imageLoader.get('green-button') : imageLoader.get('red-button'),
             realCenterX < canvas.width/2 ?
               button.x
               : canvas.width/2 - realCenterX + button.x,
             button.y,
             60, 60);
-        });
-
-        // draw boxes
-        model.boxes.forEach(function (box) {
-          context.drawImage(imageLoader.get('crate'),
-            realCenterX < canvas.width/2 ?
-              box.x
-              : canvas.width/2 - realCenterX + box.x,
-            box.y,
-            box.width, box.height);
         });
 
         // draw gates
@@ -225,6 +215,16 @@ angular.module('gameApp').directive('game',
               : canvas.width/2 - realCenterX + gate.x,
             gate.y,
             gate.width, gate.height);
+        });
+
+        // draw boxes
+        model.boxes.forEach(function (box) {
+          context.drawImage(imageLoader.get('crate'),
+            realCenterX < canvas.width/2 ?
+              box.x
+              : canvas.width/2 - realCenterX + box.x,
+            box.y,
+            box.width, box.height);
         });
 
         // draw players

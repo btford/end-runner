@@ -5,12 +5,16 @@
         "V",
         "V"
       ],
+      "width": 60,
+      "height": 120,
       "image": "vending-machine"
     },
     {
       "shape": [
         "X"
       ],
+      "width": 60,
+      "height": 60,
       "image": "brick"
     }
   ]

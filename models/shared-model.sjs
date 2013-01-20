@@ -166,7 +166,7 @@ SharedModel.prototype.initMap = function (tiles) {
             x: tileSize * i,
             y: tileSize * row,
             width: tileSize,
-            height: tileSize
+            height: 2*tileSize
           });
           break;
 
@@ -263,6 +263,11 @@ SharedModel.prototype.initMap = function (tiles) {
 
   // sort buttons
   this.buttons.sort(function (a, b) {
+    return (a.x) > (b.x) ? -1 : 1
+  });
+
+  // sort buttons
+  this.gates.sort(function (a, b) {
     return (a.x) > (b.x) ? -1 : 1
   });
 
