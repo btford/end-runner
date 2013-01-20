@@ -270,6 +270,34 @@ angular.module('gameApp').directive('game',
             60, 120);
         });
 
+        // draw progress bar
+        context.fillStyle = "#555";
+        context.fillRect(
+          canvas.width/2 - 200,
+          15,
+          400, 20);
+
+        context.fillStyle = "#000";
+        context.fillRect(
+          canvas.width/2 - 200,
+          15,
+          400*(model.zombieWall / (tileSize * levelModel.tiles[0].length)), 20);
+
+        playerIndex = 0;
+        for (prop in model.players) {
+          if (model.players.hasOwnProperty(prop)) {
+            currentPlayer = model.players[prop];
+            context.fillStyle = playerIndex ? "#f00" : "#00f";
+            context.fillRect(
+              canvas.width/2 - 200 + 400*(currentPlayer.x / (tileSize * levelModel.tiles[0].length)),
+              15,
+              20,
+              20);
+            playerIndex += 1;
+          }
+        }
+
+
         // send keystrokes
         var ctrl = gameController.get();
         if (ctrl) {
