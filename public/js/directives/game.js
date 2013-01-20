@@ -124,12 +124,8 @@ angular.module('gameApp').directive('game',
               mapContext.drawImage(imageLoader.get('car'),
                   x, y,
                   tileSize*3, tileSize);
-            } else if (col[i] === '|') {
-              mapContext.drawImage(imageLoader.get('gate'),
-                  x, y,
-                  tileSize, tileSize);
             } else if (col[i] === 'V') {
-              levelModel.tiles[row][i+1] = ' ';
+              levelModel.tiles[row+1][i] = ' ';
               mapContext.drawImage(imageLoader.get('vending-machine'),
                   x, y,
                   tileSize, 2*tileSize);
