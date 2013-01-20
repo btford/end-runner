@@ -174,6 +174,40 @@ angular.module('gameApp').directive('game',
         background.style.left = '-' + Math.floor(projectedUpperLeft/3)%1920 + 'px';
         background2.style.left = '-' + Math.floor(projectedUpperLeft/2)%1920 + 'px';
 
+        // draw buttons
+        model.buttons.forEach(function (button) {
+          context.fillStyle = button.pressed ? "#0f0" : "#f00";
+          context.fillRect(
+            realCenterX < canvas.width/2 ?
+              button.x
+              : canvas.width/2 - realCenterX + button.x,
+            button.y,
+            60, 60);
+        });
+
+        // draw boxes
+        model.boxes.forEach(function (box) {
+          context.fillStyle = "#3bc";
+          context.fillRect(
+            realCenterX < canvas.width/2 ?
+              box.x
+              : canvas.width/2 - realCenterX + box.x,
+            box.y,
+            box.width, box.height);
+        });
+
+        // draw gates
+        model.gates.forEach(function (gate) {
+          context.fillStyle = gate.open ? "#fff" : "#00f";
+          context.fillRect(
+            realCenterX < canvas.width/2 ?
+              gate.x
+              : canvas.width/2 - realCenterX + gate.x,
+            gate.y,
+            gate.width, gate.height);
+        });
+
+        // draw players
         var currentPlayer;
         for (prop in model.players) {
           if (model.players.hasOwnProperty(prop)) {
@@ -188,26 +222,6 @@ angular.module('gameApp').directive('game',
               60, 120);
           }
         }
-
-        model.buttons.forEach(function (button) {
-          context.fillStyle = button.pressed ? "#0f0" : "#f00";
-          context.fillRect(
-            realCenterX < canvas.width/2 ?
-              button.x
-              : canvas.width/2 - realCenterX + button.x,
-            button.y,
-            60, 60);
-        });
-
-        model.gates.forEach(function (gate) {
-          context.fillStyle = gate.open ? "#fff" : "#00f";
-          context.fillRect(
-            realCenterX < canvas.width/2 ?
-              gate.x
-              : canvas.width/2 - realCenterX + gate.x,
-            gate.y,
-            gate.width, gate.height);
-        });
 
         //draw zombie hoard
         context.fillStyle = "#000";

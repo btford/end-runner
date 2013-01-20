@@ -84,7 +84,6 @@ var SharedModel = module.exports = function (config) {
   this.players = {};
 
   this.zombieWall = 0;
-  this.zombies = [];
 
   var socketIds = config.players;
   this.level = config.level;
@@ -117,6 +116,8 @@ SharedModel.prototype.calculate = function (delta, controller) {
   this_(timer += delta / 10); // this.timer += delta / 10;
 
   this._calculatePlayerMovement(delta, controller);
+  this._calculatePushBoxes(delta, controller);
+
   this._calculateZombieMovement(delta, controller);
   this._calculateZombieWallMovement(delta, controller);
   this._calculatePlayerAttack(delta, controller);
@@ -134,6 +135,10 @@ SharedModel.prototype.initMap = function (tiles) {
 
   this.buttons = [];
   this.gates = [];
+
+  this.zombies = [];
+  this.boxes = [];
+
 
   tiles.forEach(function (col, row) {
     tiles[row] = col.split('');
@@ -167,6 +172,21 @@ SharedModel.prototype.initMap = function (tiles) {
             height: tileSize,
             pressed: false
           });
+          break;
+
+        case 'B':
+          // TODO: fix button hitbox here
+          this.boxes.push({
+            x: tileSize * i,
+            y: tileSize * row,
+            width: 2*tileSize,
+            height: 2*tileSize
+          });
+
+          tiles[row][i + 1] = ' ';
+          tiles[row + 1][i] = ' ';
+          tiles[row + 1][i + 1] = ' ';
+
           break;
 
         // gates (opened by buttons)
@@ -324,6 +344,22 @@ SharedModel.prototype._calculatePlayerAttack = function (delta, controller) {
   });
 
   this_(zombies = this.zombies);
+};
+
+
+SharedModel.prototype._calculatePushBoxes = function (delta, controller) {
+  
+  for (var playerId in this.players) {
+    if (this.players.hasOwnProperty(playerId)) {
+      this.boxes.forEach(function (box) {
+        if (hit(this.players[playerId], box)) {
+          box.x = this.players[playerId].x + this.players[playerId].width;
+        }
+      }, this);
+    }
+  }
+
+  this_(boxes = this.boxes);
 };
 
 SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
