@@ -306,7 +306,7 @@ SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
 };
 
 SharedModel.prototype._calculateZombieWallMovement = function (delta, controller) {
-  var incr = Math.cos(this.timer/30) + .55;
+  var incr = Math.cos(this.timer/30) + (.55 + this.timer/6000);
   this_(zombieWall += incr);
 };
 
