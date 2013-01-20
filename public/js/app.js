@@ -23,10 +23,6 @@ angular.module('gameApp', []).config(function ($routeProvider, $locationProvider
       templateUrl: 'partials/game-score',
       controller: 'GameScoreCtrl'
     })
-    .when('/test-sprite', {
-      templateUrl: 'partials/test-sprite',
-      controller: 'TestSpriteCtrl'
-    })
     .when('/loading', {
       templateUrl: 'partials/loading'
     })
