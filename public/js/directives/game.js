@@ -105,6 +105,27 @@ angular.module('gameApp').directive('game',
             });
           }
         });
+
+        // render hints for 1st level
+        if (sharedModel.get().level === 1) {
+          mapContext.drawImage(
+            imageLoader.get('text1'),
+            100, 100,
+            480, 300);
+          mapContext.drawImage(
+            imageLoader.get('text2'),
+            500, 100,
+            480, 300);
+          mapContext.drawImage(
+            imageLoader.get('text3'),
+            1000, 100,
+            480, 300);
+          mapContext.drawImage(
+            imageLoader.get('text4'),
+            1500, 100,
+            480, 300);
+        }
+
       };
 
       renderMap();
