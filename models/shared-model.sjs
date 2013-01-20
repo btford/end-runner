@@ -88,7 +88,7 @@ var SharedModel = module.exports = function (config) {
   var socketIds = config.players;
   this.level = config.level;
 
-  // TODO: 
+  // TODO:
   if (this.level > 2) {
     this.level = 2;
   }
@@ -111,21 +111,7 @@ var SharedModel = module.exports = function (config) {
   this._changed = {};
 };
 
-SharedModel.prototype.calculate = function (delta, controller) {
-  // timer
-  this_(timer += delta / 10); // this.timer += delta / 10;
 
-  this._calculatePlayerMovement(delta, controller);
-  this._calculatePushBoxes(delta, controller);
-
-  this._calculateZombieMovement(delta, controller);
-  this._calculateZombieWallMovement(delta, controller);
-  this._calculatePlayerAttack(delta, controller);
-
-  this._calculateButtonPress(delta, controller);
-}
-
-// helper
 SharedModel.prototype.initMap = function (tiles) {
 
   var tileSize = 60;
@@ -251,6 +237,176 @@ SharedModel.prototype.initMap = function (tiles) {
 };
 
 
+
+SharedModel.prototype.calculate = function (delta, controller) {
+  // timer
+  this_(timer += delta / 10); // this.timer += delta / 10;
+
+  this._calculatePlayerMovement(delta, controller);
+  this._calculatePlayerLevelCollisions(delta, controller); // includes gates
+  this._calculatePlayerCratesCollisions(delta, controller);
+
+  this._calculatePushBoxes(delta, controller);
+
+  this._calculateZombieMovement(delta, controller);
+  this._calculateZombieLevelCollisons(delta, controller);
+  this._calculateZombieCrateCollisons(delta, controller);
+
+  this._calculatePlayerAttack(delta, controller);
+
+  this._calculateZombieWallMovement(delta, controller);
+  this._calculateButtonPress(delta, controller);
+};
+
+
+SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
+
+  var groundY = 450;
+
+  var currentPlayer,
+    currentController;
+
+  // players
+  for (var playerId in this.players) {
+    if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId)) {
+
+      currentPlayer = this.players[playerId];
+      currentController = controller[playerId];
+
+      /*
+       * Is the player hit by the zombie?
+       */
+
+      var hitByZombie = false;
+
+      var i;
+      for (i = 0; i < this.zombies.length; i++) {
+        if (hit(currentPlayer, this.zombies[i])) {
+          hitByZombie = true;
+          break;
+        }
+      }
+
+      /*
+       * Movement
+       */
+
+      currentPlayer.xVelocity = delta * ( 1 / (1 + 1.5*hitByZombie)) *
+          ((~~currentController.right) - (~~currentController.left)) / 3;
+  
+      currentPlayer.x += currentPlayer.xVelocity;
+      currentPlayer.y += currentPlayer.yVelocity;
+
+
+      /*
+       * Jump/Fall
+       */
+
+      if (currentPlayer.jumping) {
+        currentPlayer.yVelocity += delta/20;
+
+      } else if (currentController.up) {
+        currentPlayer.yVelocity = -20 * (1 / (1 + 2*hitByZombie));
+        currentPlayer.jumping = true;
+      }
+      if (currentPlayer.y > groundY) {
+        currentPlayer.yVelocity = 0;
+        currentPlayer.y = groundY;
+        currentPlayer.jumping = false;
+      }
+
+      /*
+       * Animation
+       */
+
+      //check for player movement to decide on frame
+      if (~~currentController.right ||
+          ~~currentController.left ||
+          ~~currentController.up) {
+
+        currentPlayer.frame = 240;
+      } else {
+        // else if(controller for zombie attack pressed
+        // currentPlayer.frame = 120;
+        currentPlayer.frame = 0;
+      }
+
+    }
+  }
+  this_(players = this.players)
+};
+
+// handles both entities and gates
+SharedModel.prototype._calculatePlayerLevelCollisions = function (delta, controller) {
+
+  var currentPlayer,
+    currentController;
+
+  // players
+  for (var playerId in this.players) {
+    if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId)) {
+
+      /*
+       * Collision detection for Entities
+       */
+
+      for (i = 0; i < this.entities.length; i++) {
+        if (hit(currentPlayer, this.entities[i])) {
+
+          currentPlayer.x -= currentPlayer.xVelocity;
+          var xFixable = hit(currentPlayer, this.entities[i]);
+          // x fixed
+
+          currentPlayer.x += currentPlayer.xVelocity;
+          currentPlayer.y -= currentPlayer.yVelocity;
+          var yFixable = hit(currentPlayer, this.entities[i]);
+          // y-fixed
+
+          if (xFixable && yFixable) {
+            // goood to go
+
+          } else if (xFixable && !yFixable) {
+
+            currentPlayer.x -= currentPlayer.xVelocity;
+            currentPlayer.y += currentPlayer.yVelocity;
+
+          } else if (!xFixable && yFixable) {
+            // good to go
+          } else {
+            currentPlayer.x += currentPlayer.xVelocity;
+            // both fixed
+          }
+          break;
+        }
+      }
+
+      /*
+       * Collision detection for Gates
+       */
+
+      // check if we hit a gate
+      /*
+      if (!undo) {
+        for (i = this.gates.length - 1; i >= 0; i--) {
+          if (this.gates[i].open) {
+            continue;
+          } else if (hit(this.gates[i], currentPlayer)) {
+            undo = true;
+            break;
+          }
+        }
+      }
+
+      if (undo) {
+        currentPlayer.x -= currentPlayer.xVelocity;
+        currentPlayer.y -= currentPlayer.yVelocity;
+      }
+      */
+    }
+  }
+};
+
+
 SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
 
   var zombieChaseThreshold = 300;
@@ -264,7 +420,7 @@ SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
     for (var playerId in this.players) {
       if (this.players.hasOwnProperty(playerId)) {
 
-        dist = Math.abs(this.players[playerId].x - zombie.x)
+        dist = Math.abs(this.players[playerId].x - zombie.x);
         if (dist < min) {
           target = this.players[playerId];
           min = dist;
@@ -281,6 +437,39 @@ SharedModel.prototype._calculateZombieMovement = function (delta, controller) {
 
   this_(zombies = this.zombies);
 };
+
+
+SharedModel.prototype._calculatePlayerCratesCollisions = function (delta, controller) {
+  
+  for (var playerId in this.players) {
+    if (this.players.hasOwnProperty(playerId)) {
+      this.boxes.forEach(function (box) {
+        if (hit(this.players[playerId], box)) {
+
+          // if we can undo the collision by undoing the y-movement, do so
+          // otherwise, push the box
+
+          } else if (this.players[playerId].xVelocity > 0) {
+            box.x = this.players[playerId].x + this.players[playerId].width;
+          } else {
+            box.x = this.players[playerId].x - box.width;
+          }
+
+          // if the box is now hitting a gate or some entity, undo it, and undo the player's x-movement
+
+        }
+      }, this);
+    }
+  }
+
+  this_(boxes = this.boxes);
+};
+
+
+SharedModel.prototype._calculateZombieCrateCollisons = function (delta, controller) {
+
+};
+
 
 SharedModel.prototype._calculateZombieWallMovement = function (delta, controller) {
   this_(zombieWall = this.timer/8);
@@ -347,150 +536,12 @@ SharedModel.prototype._calculatePlayerAttack = function (delta, controller) {
 };
 
 
-SharedModel.prototype._calculatePushBoxes = function (delta, controller) {
-  
-  for (var playerId in this.players) {
-    if (this.players.hasOwnProperty(playerId)) {
-      this.boxes.forEach(function (box) {
-        if (hit(this.players[playerId], box)) {
-
-          // player is on top of box
-          /*
-          if (box.y - (this.players[playerId].y + this.players[playerId].height) < 5) {
-            this.players[playerId].jumping = false;
-            this.players[playerId].yVelocity = 0;
-          } else {
-          */
-          if (this.players[playerId].xVelocity > 0) {
-            box.x = this.players[playerId].x + this.players[playerId].width;
-          } else {
-            box.x = this.players[playerId].x - box.width;
-          }
-          //}
-
-        }
-      }, this);
-    }
-  }
-
-  this_(boxes = this.boxes);
-};
-
-SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
-
-  var groundY = 450;
-
-  var player_y = 0;
-  var player_x = 0;
-
-  var currentPlayer,
-    currentController;
-
-  // players
-  for (var playerId in this.players) {
-    if (this.players.hasOwnProperty(playerId) && controller.hasOwnProperty(playerId)) { 
-
-      currentPlayer = this.players[playerId];
-      currentController = controller[playerId];
-
-      /*
-       * Is the player hit by the zombie?
-       */
-
-      var hitByZombie = false;
-
-      var i;
-      for (i = 0; i < this.zombies.length; i++) {
-        if (hit(currentPlayer, this.zombies[i])) {
-          hitByZombie = true;
-          break;
-        }
-      }
-
-
-      /* 
-       * Jump/Fall
-       */
-
-      if (currentPlayer.jumping) {
-        currentPlayer.yVelocity += delta/20;
-        player_y = currentPlayer.yVelocity;
-      } else if (currentController.up) {
-        currentPlayer.yVelocity = -20 * (1 / (1 + 2*hitByZombie));
-        currentPlayer.jumping = true;
-      }
-      if (currentPlayer.y > groundY) {
-        currentPlayer.yVelocity = 0;
-        currentPlayer.y = groundY;
-        currentPlayer.jumping = false;
-      }
-
-      /*
-       * Movement
-       */
-
-      player_x = delta * ( 1 / (1 + 1.5*hitByZombie)) * ((~~currentController.right) - (~~currentController.left)) / 3;
-  
-      currentPlayer.x += player_x;
-      currentPlayer.y += player_y;
-
-      /*
-       * Collision detection
-       */
-
-      undo = false;
-      for (i = 0; i < this.entities.length; i++) {
-        if (hit(currentPlayer, this.entities[i])) {
-          undo = true;
-          break;
-        }
-      }
-
-      // check if we hit a gate
-      if (!undo) {
-        for (i = this.gates.length - 1; i >= 0; i--) {
-          if (this.gates[i].open) {
-            continue;
-          } else if (hit(this.gates[i], currentPlayer)) {
-            undo = true;
-            break;
-          }
-        }
-      }
-
-      if (undo) {
-        currentPlayer.x -= player_x;
-        currentPlayer.y -= player_y;
-      } else {
-        currentPlayer.xVelocity = player_x;
-      }
-
-      /*
-       * Animation
-       */
-
-      //check for player movement to decide on frame
-      if (~~currentController.right ||
-          ~~currentController.left ||
-          ~~currentController.up) {
-
-        currentPlayer.frame = 240;
-      } else {
-        // else if(controller for zombie attack pressed
-        // currentPlayer.frame = 120;
-        currentPlayer.frame = 0;
-      }
-
-    }
-  }
-  this_(players = this.players)
-}
 
 // return true iff zombies have overtaken either player
 SharedModel.prototype.isGameOver = function () {
 
   for (var playerId in this.players) {
-    if (this.players.hasOwnProperty(playerId)) { 
+    if (this.players.hasOwnProperty(playerId)) {
       currentPlayer = this.players[playerId];
       if (currentPlayer.x < this.zombieWall) {
         return true;
@@ -499,13 +550,13 @@ SharedModel.prototype.isGameOver = function () {
   }
 
   return false;
-}
+};
 
 // return true iff zombies have overtaken either player
 SharedModel.prototype.isNextLevel = function () {
 
   for (var playerId in this.players) {
-    if (this.players.hasOwnProperty(playerId)) { 
+    if (this.players.hasOwnProperty(playerId)) {
       currentPlayer = this.players[playerId];
       if (currentPlayer.x > 2000) {
         return true;
@@ -514,10 +565,10 @@ SharedModel.prototype.isNextLevel = function () {
   }
 
   return false;
-}
+};
 
 SharedModel.prototype.getChanges = function () {
   var changed = this._changed;
   this._changed = {};
   return changed;
-}
+};
