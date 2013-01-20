@@ -436,36 +436,16 @@ SharedModel.prototype._calculatePlayerMovement = function (delta, controller) {
        * Collision detection
        */
 
-      undo = false;
       for (i = 0; i < this.entities.length; i++) {
         correct(currentPlayer, this.entities[i]);
-        break;
       }
 
       // check if we hit a gate
-      /*
-      if (!undo) {
-        for (i = this.gates.length - 1; i >= 0; i--) {
-          if (this.gates[i].open) {
-            continue;
-          } else if (correct(this.gates[i], currentPlayer)) {
-            undo = true;
-            break;
-          }
+      for (i = this.gates.length - 1; i >= 0; i--) {
+        if (!this.gates[i].open) {
+          correct(this.gates[i], currentPlayer);
         }
       }
-
-      if (undo) {
-        currentPlayer.x -= player_x;
-        currentPlayer.y -= player_y;
-        if (player_y > 0) {
-          currentPlayer.jumping = false;
-        }
-      } else {
-        currentPlayer.xVelocity = player_x;
-        currentPlayer.jumping = true;
-      }
-      */
 
       /*
        * Animation
