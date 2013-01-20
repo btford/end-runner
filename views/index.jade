@@ -9,9 +9,10 @@ block body
           ul.nav
             li
               a(href='/lobby-list') Lobbies
-          ul.nav.pull-right
-            li
-              button.btn(ng-click='toggleFullscreen()') <i class="icon-fullscreen"></i>
+          //-
+            ul.nav.pull-right
+              li
+                button.btn(ng-click='toggleFullscreen()') <i class="icon-fullscreen"></i>
 
   div(ng-view)
 
