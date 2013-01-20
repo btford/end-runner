@@ -105,6 +105,27 @@ angular.module('gameApp').directive('game',
             });
           }
         });
+
+        // render hints for 1st level
+        if (sharedModel.get().level === 1) {
+          mapContext.drawImage(
+            imageLoader.get('text1'),
+            100, 100,
+            480, 300);
+          mapContext.drawImage(
+            imageLoader.get('text2'),
+            500, 100,
+            480, 300);
+          mapContext.drawImage(
+            imageLoader.get('text3'),
+            1000, 100,
+            480, 300);
+          mapContext.drawImage(
+            imageLoader.get('text4'),
+            1500, 100,
+            480, 300);
+        }
+
       };
 
       renderMap();
@@ -208,13 +229,15 @@ angular.module('gameApp').directive('game',
 
         // draw gates
         model.gates.forEach(function (gate) {
-          context.fillStyle = gate.open ? "#fff" : "#00f";
-          context.fillRect(
-            realCenterX < canvas.width/2 ?
-              gate.x
-              : canvas.width/2 - realCenterX + gate.x,
-            gate.y,
-            gate.width, gate.height);
+          if (!gate.open) {
+            context.drawImage(
+              imageLoader.get('gate'),
+              realCenterX < canvas.width/2 ?
+                gate.x
+                : canvas.width/2 - realCenterX + gate.x,
+              gate.y,
+              gate.width, gate.height);
+          }
         });
 
         // draw boxes

@@ -7,5 +7,11 @@
   "green-button": "/img/buttongreen.png",
   "crate": "/img/crate.png",
   "brick": "/img/brick.png",
-  "zombie-horde": "/img/zombiehorde.png"
+  "zombie-horde": "/img/zombiehorde.png",
+  "gate": "/img/gate.png",
+
+  "text1": "/img/text1.png",
+  "text2": "/img/text2.png",
+  "text3": "/img/text3.png",
+  "text4": "/img/text4.png"
 }
